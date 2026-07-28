@@ -1,0 +1,29 @@
+=== gain from protein-level features, seen vs unseen proteins ===
+
+PTM            n unseen   pos% |  base seen  ppi seen     gain |  base uns  ppi uns     gain         95% CI of gain
+-------------------------------------------------------------------------------------------------------------------
+N-Glyc N            172 100.0% |     0.9862    0.9944  +0.0082 |       nan      nan     +nan           [+nan, +nan]
+Meth R              205 100.0% |     0.9358    0.9700  +0.0342 |       nan      nan     +nan           [+nan, +nan]
+Meth K              258 100.0% |     0.9505    0.9755  +0.0250 |       nan      nan     +nan           [+nan, +nan]
+Acetyl K            232 100.0% |     0.9026    0.9535  +0.0508 |       nan      nan     +nan           [+nan, +nan]
+Sumo K              207 100.0% |     0.8583    0.9172  +0.0589 |       nan      nan     +nan           [+nan, +nan]
+Ubiq K              214 100.0% |     0.8811    0.9241  +0.0430 |       nan      nan     +nan           [+nan, +nan]
+Phospho S/T         208 100.0% |     0.9517    0.9655  +0.0138 |       nan      nan     +nan           [+nan, +nan]
+Phospho Y           123 100.0% |     0.8736    0.9241  +0.0505 |       nan      nan     +nan           [+nan, +nan]
+
+  mean gain on seen proteins   : +0.0356
+  mean gain on unseen proteins : +nan   (nan% of the seen-protein gain)
+
+  per-PTM detail (gain seen -> gain unseen):
+    N-Glyc N      +0.0082 -> +nan   (n=172)
+    Meth R        +0.0342 -> +nan   (n=205)
+    Meth K        +0.0250 -> +nan   (n=258)
+    Acetyl K      +0.0508 -> +nan   (n=232)
+    Sumo K        +0.0589 -> +nan   (n=207)
+    Ubiq K        +0.0430 -> +nan   (n=214)
+    Phospho S/T   +0.0138 -> +nan   (n=208)
+    Phospho Y     +0.0505 -> +nan   (n=123)
+
+  NOTE: unseen-protein subsets are small; treat single-PTM values as
+  indicative. The CD-HIT protein-disjoint retraining is the definitive
+  test. This is a preview that costs nothing.
