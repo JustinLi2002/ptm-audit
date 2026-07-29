@@ -1,0 +1,13 @@
+# analysis and training
+numpy>=1.23
+pandas>=1.5
+scikit-learn>=1.2
+matplotlib>=3.6
+
+# training only
+torch>=2.0
+
+# embedding generation only (not needed to reproduce the analysis)
+# networkx>=3.0
+# node2vec>=0.4
+# gensim>=4.3
