@@ -63,6 +63,10 @@ Analysis:
 
 SLURM submission scripts for the cluster runs are in `slurm/`.
 
+Figures 2, 3 and 5 are produced by `make_figures.py` from hard-coded values.
+Figure 1 is a hand-drawn schematic (`figures/fig1_mechanism.svg`). Figure 4 is
+generated from per-site predictions.
+
 ## Embeddings
 
     node2vec_train.py         # STRING v12.0 physical subnetwork -> ENSP embeddings
