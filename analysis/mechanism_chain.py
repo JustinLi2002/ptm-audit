@@ -15,6 +15,7 @@ Note on link 2: an earlier version reported R2 = -0.252 +- 0.494. That was an
 artifact of KFold(shuffle=False) over task-ordered rows, not a property of the
 embedding. Fixed with shuffle=True and StandardScaler.
 """
+import argparse
 import json
 from collections import defaultdict
 
@@ -41,8 +42,12 @@ MERGED = {'phosphorylation_y': 'phospho', 'phosphorylation_st': 'phospho',
           'acetylation_k': 'acet', 'glycosylation_n': 'glyc'}
 K = 25
 
-feats = np.load(f'{BASE}/notebooks/protein_features_ppi.npy')
-ids = json.load(open(f'{BASE}/notebooks/protein_ids_ppi.json'))
+_ap = argparse.ArgumentParser()
+_ap.add_argument('--feat', default='ppi', choices=['ppi', 'esm'])
+FEAT = _ap.parse_args().feat
+SUF = '' if FEAT == 'ppi' else f'__{FEAT}'
+feats = np.load(f'{BASE}/notebooks/protein_features_{FEAT}.npy')
+ids = json.load(open(f'{BASE}/notebooks/protein_ids_{FEAT}.json'))
 idx = {p: i for i, p in enumerate(ids)}
 
 
@@ -89,7 +94,7 @@ def link3(dm):
             v = []
             for s in range(3):
                 f = (f'{BASE}/pdisjoint_runs_v2/{p}__replica__{cond}__'
-                     f'split{s}__on_rebuilt.pred.tsv')
+                     f'split{s}' + ('' if cond == 'baseline' else SUF) + '__on_rebuilt.pred.tsv')
                 g = pd.read_csv(f, sep='\t').groupby('protein')['y_pred'] \
                       .mean().reset_index()
                 g['depth'] = g.protein.map(d).fillna(0)
@@ -120,7 +125,7 @@ def knn_control():
                 nn = NearestNeighbors(n_neighbors=min(K, len(pr))) \
                     .fit(feats[[idx[q] for q in pr.index]])
                 d = pd.read_csv(f'{BASE}/pdisjoint_runs_v2/{p}__replica__ppi__'
-                                f'split{s}__on_rebuilt.pred.tsv', sep='\t')
+                                f'split{s}{SUF}__on_rebuilt.pred.tsv', sep='\t')
                 g = d.groupby('protein')['y_pred'].mean().reset_index()
                 g = g[g.protein.isin(idx)]
                 _, nb = nn.kneighbors(feats[[idx[q] for q in g.protein]])
