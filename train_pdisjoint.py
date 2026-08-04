@@ -41,6 +41,9 @@ CKPT_DIR = f"{BASE}/checkpoints_pdisjoint"
 TEST_SRCS = ["replica", "rebuilt"]
 PPI_FEAT = f"{BASE}/notebooks/protein_features_ppi.npy"
 PPI_IDS = f"{BASE}/notebooks/protein_ids_ppi.json"
+ESM_FEAT = f"{BASE}/notebooks/protein_features_esm.npy"
+ESM_IDS = f"{BASE}/notebooks/protein_ids_esm.json"
+FEATS = {"ppi": (PPI_FEAT, PPI_IDS), "esm": (ESM_FEAT, ESM_IDS)}
 
 MAX_EPOCHS, PATIENCE = 100, 10
 BATCH_TRAIN, BATCH_TEST, LR = 64, 512, 1e-3
@@ -189,6 +192,7 @@ def main():
                     choices=["baseline", "ppi", "shuffled"])
     ap.add_argument("--shuffle-seed", type=int, default=42,
                     help="seed for the protein-to-vector permutation")
+    ap.add_argument("--feat", default="ppi", choices=["ppi", "esm"])
     ap.add_argument("--split-seed", type=int, required=True)
     ap.add_argument("--n-models", type=int, default=2)
     ap.add_argument("--max-train", type=int, default=0,
@@ -197,6 +201,8 @@ def main():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     tag = f"{a.ptm}__{a.dataset}__{a.cond}__split{a.split_seed}"
+    if a.feat != "ppi":
+        tag += f"__{a.feat}"
     print(f"[{tag}] device={device}", flush=True)
 
     split = pd.read_csv(f"{SPLIT_DIR}/split_seed{a.split_seed}.csv")
@@ -235,8 +241,9 @@ def main():
     vec_mode = a.cond in ("ppi", "shuffled")
     ppi_dim = 128
     if vec_mode:
-        feats = np.load(PPI_FEAT)
-        with open(PPI_IDS) as fh:
+        fpath, ipath = FEATS[a.feat]
+        feats = np.load(fpath)
+        with open(ipath) as fh:
             ids = json.load(fh)
         mapping = dict(zip(ids, feats))
         ppi_dim = feats.shape[1]
