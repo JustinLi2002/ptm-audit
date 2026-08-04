@@ -100,8 +100,6 @@ def figure3():
     ax.spines[["top", "right"]].set_visible(False)
     ax.grid(axis="y", color="#EEEEEE", lw=0.7)
     ax.set_axisbelow(True)
-    ax.text(0.02, 0.03, "permutation recovers 99.4% of the gain\n(range 96.1\u2013102.2%)",
-            transform=ax.transAxes, fontsize=8.5, color="#555555", va="bottom")
     save(fig, "fig3")
 
 
@@ -151,4 +149,4 @@ def figure5():
 if __name__ == "__main__":
     figure2()
     figure3()
-    figure5()
+    # figure5() superseded by analysis/make_figures_v2.py
