@@ -1,0 +1,117 @@
+Fri Jul 31 10:31:19 PM EDT 2026
+prediction: <A/B/C/D + 幅度>
+
+--- 2026-07-31 gate passed, quantitative prediction added ---
+
+Gate: Table 1 replica column reproduced exactly in 8/8 tasks (delta <= 0.0).
+Table 1 reports PURE-POSITIVE share, not label-homogeneous per Methods.
+Divergence only in phospho Y: homo 35.8% vs purepos 3.6%.
+
+replica-test pure-positive share (mean over 3 seeds):
+glyc 35.9 | meth_r 31.6 | meth_k 27.8 | acet 20.3
+sumo 16.5 | ubiq 12.6 | phos_st 3.8 | phos_y 3.5
+rebuilt-test: 0.0-0.3 in all tasks.
+
+Existing dose-response, Table 5 delta vs replica-train purepos:
+Spearman rho = 1.00 (n=7, excl. N-glyc), 0.76 (n=8).
+
+PREDICTION for Delta_PPI(replica-test), replica-trained:
+1. Sign POSITIVE in the six tasks with test purepos > 10%
+   (glyc, meth_r, meth_k, acet, sumo, ubiq).
+2. Near zero (|delta| < 0.02) in phospho S/T and phospho Y (purepos < 4%).
+3. Magnitude rank-correlates with test purepos, rho > 0.7 excluding N-glyc.
+4. Delta_perm(replica-test) clearly BELOW Delta_PPI(replica-test):
+   a permuted vector cannot detect annotation depth.
+   If instead |Delta_perm| ~ |Delta_PPI|, the effect is capacity x shift,
+   not an annotation-depth channel -> outcome D, weakens the paper.
+
+Confounds now known to co-vary with the threshold, to be stated in Methods:
+(a) donor threshold, (b) class ratio (replica 16.7-46.4% pos vs rebuilt 16.7%),
+(c) donor protein diversity. Not a single parameter.
+
+Partition instability: glyc_n test fraction 7.6/14.9/11.8%, pos rate
+63.1/34.9/35.3%; meth_r similar. Per-partition SD for these two tasks
+contains split composition, not only training stochasticity.
+
+--- RESULT, 144 cells complete ---
+Reproduction: n=120, mean d=-0.0000, sd=0.0033, max|d|=0.0171, none >0.02, uniform across tasks.
+
+2x2 mean Delta_PPI (AUROC):
+                test=replica   test=rebuilt
+train=replica      -0.028         -0.125
+train=rebuilt      -0.002         +0.021
+
+Scorecard vs prediction:
+#1 WRONG. Predicted positive sign on replica-test for the six high-purepos
+   tasks; all six remained negative. The shortcut is rewarded on replica-test
+   enough to attenuate the harm ~4.5x but not enough to flip it.
+#2 partly right. phos_st +0.0029 near zero; phos_y +0.0191, 3/3 partitions
+   positive, i.e. a real if small effect rather than noise.
+#3 RIGHT. rho(|dPPI|, test purepos) approx -0.89 on replica-test,
+   -0.96 on rebuilt-test, excluding N-glyc.
+#4 RIGHT and decisive. dPERM < dPPI in 8/8 tasks on replica-test.
+   Outcome D (capacity x shift) is excluded.
+
+Reading: harm is present in-distribution (-0.028, 6/8 negative) and amplified
+4.5x out-of-distribution. Not a train/test mismatch artifact.
+
+--- RESULT, 144 cells complete ---
+Reproduction: n=120, mean d=-0.0000, sd=0.0033, max|d|=0.0171, none >0.02, uniform across tasks.
+
+2x2 mean Delta_PPI (AUROC):
+                test=replica   test=rebuilt
+train=replica      -0.028         -0.125
+train=rebuilt      -0.002         +0.021
+
+Scorecard vs prediction:
+#1 WRONG. Predicted positive sign on replica-test for the six high-purepos
+   tasks; all six remained negative. The shortcut is rewarded on replica-test
+   enough to attenuate the harm ~4.5x but not enough to flip it.
+#2 partly right. phos_st +0.0029 near zero; phos_y +0.0191, 3/3 partitions
+   positive, i.e. a real if small effect rather than noise.
+#3 RIGHT. rho(|dPPI|, test purepos) approx -0.89 on replica-test,
+   -0.96 on rebuilt-test, excluding N-glyc.
+#4 RIGHT and decisive. dPERM < dPPI in 8/8 tasks on replica-test.
+   Outcome D (capacity x shift) is excluded.
+
+Reading: harm is present in-distribution (-0.028, 6/8 negative) and amplified
+4.5x out-of-distribution. Not a train/test mismatch artifact.
+
+--- CORRECTION to the scorecard above ---
+The claim "dPERM < dPPI in 8/8, outcome D excluded" holds on replica-test ONLY.
+On rebuilt-test the comparison REVERSES: dPPI -0.1250 vs dPERM -0.0889,
+real > perm in only 3/8 tasks. The five tasks where permutation wins are exactly
+the five with purepos > 12%.
+
+Reading: a permuted vector can only add capacity. The real embedding does MORE
+damage than noise on the natural distribution, which requires that it carries
+the information needed to execute the learned (and now wrong) rule. This is
+stronger evidence for the mechanism than the original prediction #4.
+
+Reconciles with manuscript Table 6 (real > perm 7/8 on the authors' current
+release): that release retains the threshold in its test partition, so it
+corresponds to the train=replica/test=replica cell (real > perm 8/8). The
+authors' data structurally cannot detect the reversal.
+
+Dose-response control: rho(|dPPI|, purepos, n=7 excl. N-glyc)
+  = -0.893 (replica-test), -0.964 (rebuilt-test), +0.143 (corrected regime).
+Present only where the artifact is present.
+
+--- E2 COMPLETE: mechanism chain closed ---
+Link 2: ridge(PPI embedding -> log annotation depth), CV R2 by merged type:
+  phospho .224  methyl .126  acet .235  ubi .194  sumo .210  glyc .152
+  (earlier R2 = -0.252 was an artifact of KFold(shuffle=False) with
+   task-ordered rows; corrected with shuffle=True + StandardScaler)
+Link 3: score-vs-depth rank correlation, replica-trained on rebuilt-test.
+  Adding PPI moves the correlation NEGATIVE in 8/8 tasks
+  (delta -0.180 to -0.532). Sequence baseline is positive in 7/8, i.e.
+  biologically correct direction. The channel inverts it.
+kNN: model score vs k=25 embedding-neighbour positive rate.
+  neighbour labels from replica: +0.247 to +0.562, 8/8 positive
+  neighbour labels from rebuilt: NEGATIVE in the 5 high-purepos tasks
+  diff vs purepos: rho +0.667 (n=8), +0.857 (n=7 excl N-glyc)
+  Control: phospho Y (purepos 3.5%) shows almost no divergence (+0.042),
+  as expected where artifact and true labels agree.
+Decisive: if the channel tracked real propensity, nbr=rebuilt would be
+positive. It is negative. The model follows a constructed label pattern
+that runs opposite to biology. This explains the sub-0.5 AUROC values.

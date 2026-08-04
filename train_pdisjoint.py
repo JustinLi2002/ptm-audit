@@ -36,7 +36,9 @@ from torch.utils.data import Dataset, DataLoader
 
 BASE = "/home/FCAM/juli/HRP"
 SPLIT_DIR = f"{BASE}/pdisjoint"
-OUTDIR = f"{BASE}/pdisjoint_runs"
+OUTDIR = f"{BASE}/pdisjoint_runs_v2"
+CKPT_DIR = f"{BASE}/checkpoints_pdisjoint"
+TEST_SRCS = ["replica", "rebuilt"]
 PPI_FEAT = f"{BASE}/notebooks/protein_features_ppi.npy"
 PPI_IDS = f"{BASE}/notebooks/protein_ids_ppi.json"
 
@@ -205,20 +207,30 @@ def main():
     trn = train_src[train_src.split == "train"].reset_index(drop=True)
     val = train_src[train_src.split == "val"].reset_index(drop=True)
 
-    # evaluation is always on the unrestricted-sampling test set
-    eval_src = pd.read_csv(f"{BASE}/rebuilt/{a.ptm}_all.tsv", sep="\t")
-    eval_src["split"] = eval_src["protein"].map(sp)
-    tst = eval_src[eval_src.split == "test"].reset_index(drop=True)
+    # ── evaluation: BOTH test partitions, identical test proteins ──────────
+    tests = {}
+    for tname in TEST_SRCS:
+        e = pd.read_csv(f"{BASE}/{tname}/{a.ptm}_all.tsv", sep="\t")
+        e["split"] = e["protein"].map(sp)
+        tests[tname] = e[e.split == "test"].reset_index(drop=True)
+
+    pa, pb = (set(tests[t]["protein"]) for t in TEST_SRCS)
+    print(f"  test proteins: {TEST_SRCS[0]}={len(pa)} {TEST_SRCS[1]}={len(pb)} "
+          f"shared={len(pa & pb)} only_a={len(pa - pb)} only_b={len(pb - pa)}",
+          flush=True)
 
     if a.max_train and len(trn) > a.max_train:
         trn = trn.sample(a.max_train, random_state=0).reset_index(drop=True)
         print(f"  subsampled train to {len(trn)}", flush=True)
 
-    for nm, d in (("train", trn), ("val", val), ("test", tst)):
+    checks = [("train", trn), ("val", val)] + [(f"test_{t}", tests[t]) for t in TEST_SRCS]
+    for nm, d in checks:
         if len(d) == 0 or d.y.nunique() < 2:
             sys.exit(f"[{tag}] {nm} split unusable (n={len(d)})")
-    print(f"  train={len(trn)} val={len(val)} test={len(tst)} "
-          f"pos: {trn.y.mean():.3f}/{val.y.mean():.3f}/{tst.y.mean():.3f}", flush=True)
+    print(f"  train={len(trn)} val={len(val)} " +
+          " ".join(f"test_{t}={len(tests[t])}" for t in TEST_SRCS) +
+          f" pos: {trn.y.mean():.3f}/{val.y.mean():.3f}/" +
+          "/".join(f"{tests[t].y.mean():.3f}" for t in TEST_SRCS), flush=True)
 
     vec_mode = a.cond in ("ppi", "shuffled")
     ppi_dim = 128
@@ -231,10 +243,8 @@ def main():
         if a.cond == "shuffled":
             # Permute which protein carries which vector. Preserves the marginal
             # distribution of vectors, within-protein constancy, and the set of
-            # proteins that have no vector at all; destroys only the
-            # protein-to-embedding correspondence. Under a protein-disjoint
-            # split this asks whether the gain comes from structure in PPI space
-            # or from something that survives randomisation.
+            # proteins with no vector; destroys only the protein-to-embedding
+            # correspondence.
             rng = np.random.RandomState(a.shuffle_seed)
             prots = list(mapping.keys())
             vecs = [mapping[q] for q in prots]
@@ -242,48 +252,72 @@ def main():
             mapping = dict(zip(prots, [vecs[i] for i in order]))
             n_moved = sum(1 for i, j in enumerate(order) if i != j)
             print(f"  permuted {len(prots)} vectors ({n_moved} moved)", flush=True)
-        vt, vv, vs = (attach_vectors(d, mapping, ppi_dim) for d in (trn, val, tst))
+        vt = attach_vectors(trn, mapping, ppi_dim)
+        vv = attach_vectors(val, mapping, ppi_dim)
+        vtest = {t: attach_vectors(tests[t], mapping, ppi_dim) for t in TEST_SRCS}
     else:
-        vt = vv = vs = None
+        vt = vv = None
+        vtest = {t: None for t in TEST_SRCS}
 
     pin = device.type == "cuda"
     trn_loader = DataLoader(DS(trn, vt), BATCH_TRAIN, shuffle=True,
                             num_workers=4, pin_memory=pin, drop_last=True)
     val_loader = DataLoader(DS(val, vv), BATCH_TEST, shuffle=False, num_workers=2)
-    tst_loader = DataLoader(DS(tst, vs), BATCH_TEST, shuffle=False, num_workers=2)
+    tst_loaders = {t: DataLoader(DS(tests[t], vtest[t]), BATCH_TEST,
+                                 shuffle=False, num_workers=2) for t in TEST_SRCS}
 
     y_train = trn.y.values
-    y_test = tst.y.values
-    probs, per_seed, epochs = [], [], []
+    probs = {t: [] for t in TEST_SRCS}
+    per_seed = {t: [] for t in TEST_SRCS}
+    epochs = []
+
+    os.makedirs(CKPT_DIR, exist_ok=True)
     for s in range(a.n_models):
         print(f"  --- model seed {s}", flush=True)
         model, va, ep = train_one(trn_loader, val_loader, s, device,
                                   vec_mode, ppi_dim, y_train)
-        pr = predict(model, tst_loader, device, vec_mode)
-        probs.append(pr)
-        per_seed.append(float(roc_auc_score(y_test, pr)))
+        torch.save(model.state_dict(), f"{CKPT_DIR}/{tag}__init{s}.pt")
         epochs.append(ep)
-        print(f"  seed {s}: val={va:.4f} test={per_seed[-1]:.4f} (stopped ep {ep})",
-              flush=True)
+        msg = f"  seed {s}: val={va:.4f}"
+        for t in TEST_SRCS:
+            pr = predict(model, tst_loaders[t], device, vec_mode)
+            probs[t].append(pr)
+            auc = float(roc_auc_score(tests[t].y.values, pr))
+            per_seed[t].append(auc)
+            msg += f" test[{t}]={auc:.4f}"
+        print(msg + f" (stopped ep {ep})", flush=True)
 
-    ens = iqr_average(np.stack(probs))
-    res = dict(
-        ptm=a.ptm, dataset=a.dataset, cond=a.cond, split_seed=a.split_seed,
-        n_train=len(trn), n_val=len(val), n_test=len(tst),
-        pos_train=float(trn.y.mean()), pos_test=float(tst.y.mean()),
-        auroc=float(roc_auc_score(y_test, ens)),
-        auprc=float(average_precision_score(y_test, ens)),
-        seed_aurocs=per_seed, seed_mean=float(np.mean(per_seed)),
-        seed_sd=float(np.std(per_seed)), epochs=epochs,
-    )
     os.makedirs(OUTDIR, exist_ok=True)
+    res = dict(ptm=a.ptm, dataset=a.dataset, cond=a.cond,
+               split_seed=a.split_seed, n_models=a.n_models,
+               n_train=len(trn), n_val=len(val),
+               pos_train=float(trn.y.mean()), epochs=epochs, tests={})
+    for t in TEST_SRCS:
+        y_t = tests[t].y.values
+        ens = iqr_average(np.stack(probs[t]))
+        res["tests"][t] = dict(
+            n_test=len(y_t), pos_test=float(y_t.mean()),
+            auroc=float(roc_auc_score(y_t, ens)),
+            auprc=float(average_precision_score(y_t, ens)),
+            seed_aurocs=per_seed[t],
+            seed_mean=float(np.mean(per_seed[t])),
+            seed_sd=float(np.std(per_seed[t])),
+        )
+        out = tests[t][["protein", "aa", "pos", "y"]].copy()
+        out["y_pred"] = ens
+        for s in range(a.n_models):
+            out[f"init_{s}"] = probs[t][s]
+        out["task"] = a.ptm
+        out["split_seed"] = a.split_seed
+        out["train_construction"] = a.dataset
+        out["test_construction"] = t
+        out.to_csv(f"{OUTDIR}/{tag}__on_{t}.pred.tsv", sep="\t", index=False)
+
     with open(f"{OUTDIR}/{tag}.json", "w") as fh:
         json.dump(res, fh, indent=2)
-    out = tst[["protein", "aa", "pos", "y"]].copy()
-    out["y_pred"] = ens
-    out.to_csv(f"{OUTDIR}/{tag}.pred.tsv", sep="\t", index=False)
-    print(f"[{tag}] AUROC={res['auroc']:.4f} AUPRC={res['auprc']:.4f} "
-          f"seeds={res['seed_mean']:.4f}±{res['seed_sd']:.4f}", flush=True)
+    print(f"[{tag}] " + "  ".join(
+        f"{t}: AUROC={res['tests'][t]['auroc']:.4f} "
+        f"AUPRC={res['tests'][t]['auprc']:.4f}" for t in TEST_SRCS), flush=True)
 
 
 if __name__ == "__main__":

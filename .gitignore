@@ -1,0 +1,5 @@
+*.pt
+*.npy
+logs/
+__pycache__/
+*.pyc
