@@ -29,12 +29,12 @@ embedding does *more* damage than a permuted vector of the same shape.
 
 ## Four checks
 
-| Script | Question |
+| Check | Script |
 |---|---|
-| `audit_ptm_benchmark.py` | How much of the dataset is label-homogeneous, how much of the test set does that determine, and how far does a protein-identity-only classifier get? (tables T3, T4, T5) |
-| `train_pdisjoint.py --cond shuffled` | Does a permuted feature vector reproduce the gain? |
-| `analysis/icc_by_task.py` | Does the channel move prediction variance from sites to proteins? The within-protein mean square ratio has a defined null of 1.0. |
-| `analysis/cluster_bootstrap.py` | Protein-level bootstrap intervals, and the paired difference of declines. |
+| Share of training sites on label-homogeneous proteins, and separately on pure-positive proteins | `audit_ptm_benchmark.py`, `analysis/gate_homogeneity.py` |
+| Protein-identity baseline: score each site by its protein's training positive rate | `audit_ptm_benchmark.py` |
+| Within-protein mean square ratio with and without the channel; null value 1.0 | `analysis/icc_by_task.py` |
+| Permutation control: does a permuted feature vector reproduce the gain? | `train_pdisjoint.py --cond shuffled` |
 
 Recovery near 100% under permutation indicates a channel being used as a protein
 identifier. A negative reading only shows the channel is *not* being used as an
@@ -46,6 +46,18 @@ permuted`, and even that is conditional on how the test partition was built.
 Under threshold-sampled negatives the real embedding beats the permutation in
 8/8 tasks; under natural negatives it *loses* in the five tasks where the
 shortcut is available. Report both test constructions.
+
+Three of the four checks can be computed on an existing benchmark. The fourth
+cannot: under threshold-sampled evaluation a frozen language model channel
+passes the permutation control in every partition, shows no dose-response with
+homogeneity, and improves AUPRC in every task, while the same trained models
+lose 0.13 AUPRC under natural negatives. Deciding whether a protein-level
+channel generalises requires a test partition whose negatives were not drawn
+under the rule being tested, which in practice means rebuilding them.
+
+Confidence intervals throughout are protein-level (`analysis/cluster_bootstrap.py`),
+not site-level; the ICC values reported here contradict the independence
+assumption the latter makes.
 
 ## Quick start
 
@@ -61,7 +73,7 @@ model's AUROCs:
 
 ## Full pipeline
 
-Dataset construction and evaluation:
+Dataset construction and training:
 
     rebuild_datasets.py       # rebuild datasets varying only the sampling rule
     make_pdisjoint_split.py   # CD-HIT clusters -> protein-disjoint partitions
@@ -84,14 +96,16 @@ Analysis:
     bootstrap_ci.py           # paired bootstrap intervals (site-level; superseded)
     summarize_pdisjoint.py    # aggregate protein-disjoint runs
     make_table1.py            # assemble the main comparison
-    make_figures.py           # Figures 2, 3 and 5
+    make_figures.py           # Figures 2 and 3
 
     analysis/gate_homogeneity.py    # homogeneity by construction and partition
     analysis/crosseval_summary.py   # 2x2x2 cross-evaluation
     analysis/mechanism_chain.py     # annotation-depth mechanism, end to end
     analysis/icc_by_task.py         # ICC and MSW, all tasks, both constructions
     analysis/cluster_bootstrap.py   # protein-level bootstrap for T2/S1/S2
+    analysis/homology_control.py    # nearest-neighbour separation, error-distance test
     analysis/sanity_posrate.py      # per-protein positive rate variability
+    analysis/make_figures_v2.py     # Figures 4-7, from the run outputs
 
 `bootstrap_ci.py` resamples sites, which assumes site independence — contradicted
 by the ICC values this work reports. Use `analysis/cluster_bootstrap.py`, which
@@ -100,9 +114,43 @@ whether two marginal intervals overlap.
 
 SLURM submission scripts for the cluster runs are in `slurm/`.
 
-Figures 2, 3 and 5 are produced by `make_figures.py` from hard-coded values.
-Figure 1 is a hand-drawn schematic (`figures/fig1_mechanism.svg`). Figure 4 is
-generated from per-site predictions.
+Figure 1 is a hand-drawn schematic (`figures/fig1_mechanism.svg`). Figures 2 and
+3 are produced by `make_figures.py` from hard-coded values. Figures 4 to 7 are
+produced by `analysis/make_figures_v2.py`, which reads `pdisjoint_runs_v2/` and
+the feature matrices directly, so every panel is reproducible from the archived
+data.
+
+## Reproducing the manuscript
+
+| Manuscript item | Script |
+|---|---|
+| Table 1, homogeneity by construction | `analysis/gate_homogeneity.py` |
+| Tables 2, S1, S2 | `analysis/cluster_bootstrap.py` |
+| Tables 3, 4 | `audit_ptm_benchmark.py`, `restricted_eval.py` |
+| Tables 5, 6, S3, S4 | `analysis/crosseval_summary.py [--feat esm]` |
+| Table 7, current release | `train_alldata.py`, `summarize_pdisjoint.py` |
+| Table S5, annotation depth | `analysis/mechanism_chain.py` |
+| Figures 2, 3 | `make_figures.py` |
+| Figures 4-7 | `analysis/make_figures_v2.py` |
+| Variance structure, all tasks | `analysis/icc_by_task.py [--feat esm]` |
+| Homology proximity control | `analysis/homology_control.py` |
+| Per-protein positive rate check | `analysis/sanity_posrate.py` |
+
+Training runs, in order:
+
+    sbatch slurm/train_pdisjoint_v2.slurm   # 144 cells, interaction embedding
+    sbatch slurm/extract_esm.slurm          # language model feature extraction
+    sbatch slurm/train_esm.slurm            # 96 cells, language model arm
+
+`pdisjoint_runs/` holds an earlier round and is retained as a reproduction
+control: across the 120 shared cells the mean difference in AUROC between the
+two rounds is −0.0000 (sd 0.0033, max 0.0171, none above 0.02, uniform across
+tasks). Exact reproduction is not possible because cuDNN provides no
+deterministic GRU implementation, so the manuscript reports the second round
+throughout and the first is kept for comparison.
+
+Predictions recorded before each experiment was run, including the two that
+turned out wrong, are in `docs/docs_prediction_crosseval.txt`.
 
 ## Embeddings
 
@@ -126,17 +174,23 @@ is 0.186, and no collapse occurred.
 That check does not transfer to a protein language model. Frozen mean-pooled
 ESM-2 embeddings have a raw mean pairwise cosine near 0.87, which reflects the
 known anisotropy of transformer representations rather than degeneracy: after
-subtracting the mean vector it falls to approximately zero. Report the centred
-cosine and the effective rank for pLM features, not the raw cosine. The features
-are used uncentred, so that the two channels differ only in their source.
+subtracting the mean vector it falls to approximately zero, and the effective
+rank is 200.5 of 1280. Report the centred cosine and the effective rank for pLM
+features, not the raw cosine. The features are used uncentred, so that the two
+channels differ only in their source.
 
 ## Data
 
 `data/` holds the interaction embeddings, the STRING-to-UniProt mapping table
 they derive from, and the protein-disjoint partition assignments. The two
-analysed PTM releases, their download dates and their checksums are described in
-`DATA.md`; the releases themselves are archived separately because the
-individually posted files on the source portal are expected to change.
+analysed PTM releases, their download dates and their checksums, and the
+provenance of the language model embeddings, are described in `DATA.md`; the
+releases themselves are archived separately because the individually posted
+files on the source portal are expected to change.
+
+Reconstructed datasets, partition assignments, per-site predictions for every
+cell of the cross-evaluation, and both feature matrices are deposited at
+[Zenodo DOI to be added].
 
 ## Requirements
 
@@ -150,6 +204,8 @@ Embedding generation only:
 
     networkx, node2vec, gensim   # interaction embeddings
     fair-esm                     # ESM-2 embeddings
+
+Pinned versions are in `requirements.txt`.
 
 ## Citation
 
