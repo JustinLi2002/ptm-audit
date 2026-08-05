@@ -32,8 +32,11 @@ from itertools import groupby
 
 import pandas as pd
 
-FASTA = "/home/FCAM/juli/HRP/deepmvp/DeepMVP/data/swiss_prot_human_20190214.fasta"
-RETRAIN = "/home/FCAM/juli/HRP/retrain"
+# Paths are overridable so the pipeline can be run outside our environment.
+BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
+FASTA = os.environ.get(
+    "PTM_AUDIT_FASTA", f"{BASE}/deepmvp/DeepMVP/data/swiss_prot_human_20190214.fasta")
+RETRAIN = os.environ.get("PTM_AUDIT_RETRAIN", f"{BASE}/retrain")
 WINDOW = 31
 
 # PTM -> residues that are candidate sites

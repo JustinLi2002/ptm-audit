@@ -287,3 +287,9 @@ the manuscript can be checked without rerunning anything:
 
 `table1.txt`, `summary.json`, `unseen_eval.txt` and the two checksum files are
 from the earlier round.
+
+Paths default to the environment in which the analysis was run. `rebuild_datasets.py`
+reads `PTM_AUDIT_BASE`, `PTM_AUDIT_FASTA` and `PTM_AUDIT_RETRAIN`;
+`build_protein_features.py` and `node2vec_train.py` take theirs as command-line
+arguments. Everything under `analysis/` uses the `BASE` constant at the top of
+each file.
