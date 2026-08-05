@@ -239,3 +239,51 @@ Pinned versions are in `requirements.txt`.
 ## Licence
 
 MIT. See `LICENSE`.
+
+### SLURM scripts
+
+    slurm/cdhit.slurm                # CD-HIT clustering for the protein-disjoint split
+    slurm/train_pdisjoint_v2.slurm   # 144 cells, interaction embedding, both test sets
+    slurm/extract_esm.slurm          # language model feature extraction
+    slurm/train_esm.slurm            # 96 cells, language model arm
+    slurm/alldata.slurm              # training on the authors' current release
+    slurm/rerun_inference.slurm      # regenerate published-protocol predictions
+
+`train_pdisjoint.slurm` and `shuffle_pdisjoint.slurm` are the earlier round,
+retained because `pdisjoint_runs/` was produced by them and is kept as a
+reproduction control. `shuffle.slurm` is the permutation control under the
+published protocol.
+
+### Archived outputs
+
+`results/` holds the console output of every analysis script, so the numbers in
+the manuscript can be checked without rerunning anything:
+
+    crosseval_ppi.txt / crosseval_esm.txt   the 2x2x2 cross-evaluation
+    mechanism_ppi.txt / mechanism_esm.txt   the annotation-depth chain
+    icc_ppi.txt / icc_esm.txt               ICC and within-protein mean squares
+    cluster_bootstrap_out.txt               protein-level intervals
+    homology_control.txt                    nearest-neighbour separation
+    sanity_posrate.txt                      per-protein positive rate spread
+    synthetic_demo.tsv                      one synthetic configuration
+    figures/figure6_sweep.tsv               the full synthetic parameter sweep
+
+`table1.txt`, `summary.json`, `unseen_eval.txt` and the two checksum files are
+from the earlier round.
+
+### Archived outputs
+
+`results/` holds the console output of every analysis script, so the numbers in
+the manuscript can be checked without rerunning anything:
+
+    crosseval_ppi.txt / crosseval_esm.txt   the 2x2x2 cross-evaluation
+    mechanism_ppi.txt / mechanism_esm.txt   the annotation-depth chain
+    icc_ppi.txt / icc_esm.txt               ICC and within-protein mean squares
+    cluster_bootstrap_out.txt               protein-level intervals
+    homology_control.txt                    nearest-neighbour separation
+    sanity_posrate.txt                      per-protein positive rate spread
+    synthetic_demo.tsv                      one synthetic configuration
+    figures/figure6_sweep.tsv               the full synthetic parameter sweep
+
+`table1.txt`, `summary.json`, `unseen_eval.txt` and the two checksum files are
+from the earlier round.

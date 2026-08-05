@@ -1,0 +1,9 @@
+PTM                  posrate mean      sd     IQR   rho(posrate,depth)
+phosphorylation_y           0.193   0.158   0.167               +0.693
+phosphorylation_st          0.178   0.161   0.198               +0.763
+ubiquitination_k            0.281   0.218   0.322               +0.721
+sumoylation_k               0.201   0.184   0.225               +0.779
+acetylation_k               0.209   0.192   0.231               +0.745
+methylation_k               0.193   0.154   0.163               +0.662
+methylation_r               0.189   0.160   0.147               +0.668
+glycosylation_n             0.192   0.134   0.167               +0.676

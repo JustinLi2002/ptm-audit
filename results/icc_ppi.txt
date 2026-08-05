@@ -1,0 +1,22 @@
+
+=== trained on replica, evaluated on rebuilt-test, [interaction embedding], 3 splits averaged ===
+PTM                    tPP%  ICC base  ICC +feat  ICC fold  MSW base  MSW +feat  MSW ratio  n prot
+phosphorylation_st     3.8%     0.126      0.233      1.9x    0.0764     0.0819      0.93x    1305
+phosphorylation_y      3.5%     0.126      0.336      2.7x    0.0541     0.0534      1.01x     425
+ubiquitination_k      12.6%     0.047      0.232      4.9x    0.0821     0.0690      1.19x    1137
+sumoylation_k         16.5%     0.059      0.424      7.2x    0.0814     0.0627      1.30x     620
+acetylation_k         20.3%     0.051      0.579     11.3x    0.1021     0.0374      2.73x     655
+methylation_k         27.8%     0.114      0.803      7.0x    0.0520     0.0100      5.21x     527
+methylation_r         31.6%     0.134      0.870      6.5x    0.0672     0.0085      7.90x     339
+glycosylation_n       35.9%     0.052      0.394      7.5x    0.1552     0.1025      1.51x     256
+
+=== trained on rebuilt, evaluated on rebuilt-test, [interaction embedding], 3 splits averaged ===
+PTM                    tPP%  ICC base  ICC +feat  ICC fold  MSW base  MSW +feat  MSW ratio  n prot
+phosphorylation_st     3.8%     0.148      0.257      1.7x    0.0763     0.0760      1.00x    1305
+phosphorylation_y      3.5%     0.124      0.222      1.8x    0.0653     0.0686      0.95x     425
+ubiquitination_k      12.6%     0.076      0.264      3.5x    0.0657     0.0752      0.87x    1137
+sumoylation_k         16.5%     0.049      0.265      5.4x    0.0650     0.0717      0.91x     620
+acetylation_k         20.3%     0.045      0.259      5.8x    0.0785     0.0798      0.98x     655
+methylation_k         27.8%     0.117      0.255      2.2x    0.0552     0.0557      0.99x     527
+methylation_r         31.6%     0.135      0.263      2.0x    0.0566     0.0627      0.90x     339
+glycosylation_n       35.9%     0.052      0.058      1.1x    0.1352     0.1369      0.99x     256

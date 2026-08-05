@@ -1,0 +1,20 @@
+(a) nearest-neighbour cosine distance
+    feature     test->train  train (loo)   ratio  n test
+    ppi              0.2536       0.2303   1.101    1510
+    esm              0.0170       0.0128   1.333    1668
+
+(b) rho(distance to nearest training protein, |per-protein error|)
+    PTM                   baseline  +feature    delta    dFeat
+    Phospho Y               -0.152    +0.300   +0.451  +0.0149
+    Phospho S/T             -0.127    +0.368   +0.495  -0.0266
+    Ubiq K                  -0.183    +0.080   +0.263  -0.0114
+    Sumo K                  -0.018    +0.315   +0.333  -0.0663
+    Acetyl K                -0.235    -0.040   +0.195  -0.1776
+    Meth K/R                -0.097    -0.171   -0.074  -0.2488
+    Meth R                  -0.036    -0.005   +0.031  -0.2238
+    N-Glyc N                +0.024    +0.119   +0.095  -0.0666
+
+    rho(delta, dFeat) = +0.857, n = 8
+    Homology transfer predicts a NEGATIVE correlation here: the more
+    harm, the more the error should depend on proximity. It is
+    positive, so proximity does not explain the harm.

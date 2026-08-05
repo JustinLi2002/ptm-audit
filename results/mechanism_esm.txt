@@ -1,0 +1,33 @@
+[link 2] ridge(embedding -> log annotation depth), 5-fold CV R2
+  depth vs ||emb||  rho = +0.101
+  global          R2 = +0.560 +- 0.010  (n=16336)
+  phospho         R2 = +0.575 +- 0.011  (n=13495)
+  methyl          R2 = +0.277 +- 0.021  (n=5684)
+  acet            R2 = +0.398 +- 0.019  (n=6745)
+  ubi             R2 = +0.395 +- 0.020  (n=11652)
+  sumo            R2 = +0.323 +- 0.029  (n=6353)
+  glyc            R2 = +0.464 +- 0.041  (n=2977)
+
+[link 3] score vs merged-type depth, replica-trained on rebuilt-test, 3 splits averaged
+PTM                    baseline       +PPI    delta
+phosphorylation_y        +0.181     -0.354   -0.535
+phosphorylation_st       +0.426     -0.278   -0.704
+ubiquitination_k         +0.127     -0.336   -0.463
+sumoylation_k            -0.002     -0.373   -0.371
+acetylation_k            +0.226     -0.452   -0.677
+methylation_k            +0.147     -0.328   -0.476
+methylation_r            +0.110     -0.363   -0.473
+glycosylation_n          +0.328     -0.307   -0.635
+
+[kNN control] score vs k=25 neighbourhood positive rate, neighbour labels from both constructions
+PTM                    tPP%  nbr=replica  nbr=rebuilt     diff
+phosphorylation_y      3.5%       +0.519       +0.525   -0.006
+phosphorylation_st     3.8%       +0.359       +0.124   +0.235
+ubiquitination_k      12.6%       +0.508       +0.300   +0.208
+sumoylation_k         16.5%       +0.547       -0.068   +0.615
+acetylation_k         20.3%       +0.516       -0.021   +0.537
+methylation_k         27.8%       +0.477       -0.009   +0.485
+methylation_r         31.6%       +0.552       +0.058   +0.494
+glycosylation_n       35.9%       +0.441       +0.226   +0.215
+
+  rho(diff, purepos) n8 = +0.381   n7 = +0.643
