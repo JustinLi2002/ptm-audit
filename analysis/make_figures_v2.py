@@ -298,12 +298,8 @@ if __name__ == '__main__':
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     print('Figure 3 (mechanism chain) ...', flush=True); mechanism_chain_figure(a.out)
-    print('figure 5 ...', flush=True)
-    # superseded by make_figure_merged.py:
-    # cross_eval_figure('ppi', 'figureX_ppi.png', a.out,
-                      'Interaction embedding')
-    print('figure 6 ...', flush=True)
-    cross_eval_figure('esm', 'figureX_esm.png', a.out,
-                      'Frozen mean-pooled ESM-2 650M')
+    # The per-family cross-evaluation panels are superseded by
+    # analysis/make_figure_merged.py, which puts both feature families
+    # into one 2x2 (manuscript Figure 4).
     print('Figure 5 (variance structure) ...', flush=True); variance_figure(a.out)
     print('done ->', a.out)

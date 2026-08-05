@@ -35,7 +35,6 @@ Outputs a TSV per mode and, for the sweep, a heatmap.
 """
 import argparse
 import itertools
-import json
 
 import numpy as np
 import pandas as pd

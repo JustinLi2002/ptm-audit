@@ -97,7 +97,7 @@ def error_distance(feat, split_seed):
     Xtr = unit(f[[idx[p] for p in tr_p if p in idx]])
     nn = NearestNeighbors(n_neighbors=1, metric='cosine').fit(Xtr)
 
-    print(f'\n(b) rho(distance to nearest training protein, |per-protein error|)')
+    print('\n(b) rho(distance to nearest training protein, |per-protein error|)')
     print(f"    {'PTM':20s} {'baseline':>9s} {'+feature':>9s} {'delta':>8s} "
           f"{'dFeat':>8s}")
     rows = []

@@ -18,7 +18,6 @@ Usage:
     python unseen_protein_eval.py
 """
 
-import glob
 import os
 from collections import defaultdict
 
