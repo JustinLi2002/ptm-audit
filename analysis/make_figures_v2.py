@@ -99,7 +99,7 @@ def feature(feat):
 
 
 # ------------------------------------------------------------------ Figure 4
-def figure4(out):
+def mechanism_chain_figure(out):
     dm, _ = depths()
     fig, ax = plt.subplots(1, 3, figsize=(7.6, 2.9))
     pipe = make_pipeline(StandardScaler(), RidgeCV(alphas=np.logspace(-2, 4, 13)))
@@ -186,7 +186,7 @@ def figure4(out):
                  frameon=False, fontsize=5.5, loc='lower left',
                  bbox_to_anchor=(-0.02, -0.02))
     fig.tight_layout(w_pad=1.8)
-    fig.savefig(f'{out}/figure4.png')
+    fig.savefig(f'{out}/figure3.png')
     plt.close(fig)
 
 
@@ -228,7 +228,7 @@ def cross_eval_figure(feat, fname, out, title):
 
 
 # ------------------------------------------------------------------ Figure 7
-def figure7(out):
+def variance_figure(out):
     fig = plt.figure(figsize=(7.2, 3.1))
     gs = fig.add_gridspec(1, 2, width_ratios=[1.1, 1])
 
@@ -288,7 +288,7 @@ def figure7(out):
     axb.set_title('b  Variance collapse, all tasks', loc='left', fontsize=8)
     axb.legend(frameon=False, fontsize=5.5, loc='upper left')
     fig.tight_layout()
-    fig.savefig(f'{out}/figure7.png')
+    fig.savefig(f'{out}/figure5.png')
     plt.close(fig)
 
 
@@ -297,12 +297,13 @@ if __name__ == '__main__':
     ap.add_argument('--out', default='figures')
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
-    print('figure 4 ...', flush=True); figure4(a.out)
+    print('Figure 3 (mechanism chain) ...', flush=True); mechanism_chain_figure(a.out)
     print('figure 5 ...', flush=True)
-    cross_eval_figure('ppi', 'figure5.png', a.out,
+    # superseded by make_figure_merged.py:
+    # cross_eval_figure('ppi', 'figureX_ppi.png', a.out,
                       'Interaction embedding')
     print('figure 6 ...', flush=True)
-    cross_eval_figure('esm', 'figure6.png', a.out,
+    cross_eval_figure('esm', 'figureX_esm.png', a.out,
                       'Frozen mean-pooled ESM-2 650M')
-    print('figure 7 ...', flush=True); figure7(a.out)
+    print('Figure 5 (variance structure) ...', flush=True); variance_figure(a.out)
     print('done ->', a.out)

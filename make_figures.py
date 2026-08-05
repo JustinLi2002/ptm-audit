@@ -8,6 +8,7 @@ Figure 4 needs per-site predictions and is generated separately on the cluster.
 Outputs fig2.png/.pdf, fig3.png/.pdf, fig5.png/.pdf at 300 dpi.
 """
 
+import os
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -22,6 +23,9 @@ plt.rcParams.update({
     "figure.dpi": 300, "savefig.dpi": 300, "savefig.bbox": "tight",
 })
 
+OUTDIR = os.path.dirname(os.path.abspath(__file__)) + "/figures"
+os.makedirs(OUTDIR, exist_ok=True)
+
 BLUE, GREY, ORANGE, PINK = "#1F6FB2", "#8A8A8A", "#D2691E", "#B5658C"
 TASKS = ["Phospho S/T", "Phospho Y", "Acetylation K", "Methylation K/R",
          "Methylation R", "Sumoylation K", "Ubiquitination K", "N-Glyc N"]
@@ -29,7 +33,7 @@ TASKS = ["Phospho S/T", "Phospho Y", "Acetylation K", "Methylation K/R",
 
 def save(fig, name):
     for ext in ("png", "pdf"):
-        fig.savefig(f"{name}.{ext}")
+        fig.savefig(f"{OUTDIR}/{name}.{ext}")
     plt.close(fig)
     print(f"wrote {name}.png / .pdf")
 
