@@ -1,0 +1,21 @@
+PTMS      : ['phosphorylation_y', 'phosphorylation_st', 'ubiquitination_k', 'sumoylation_k', 'acetylation_k', 'methylation_k', 'methylation_r', 'glycosylation_n']
+MERGED    : {'phosphorylation_y': 'phospho', 'phosphorylation_st': 'phospho', 'methylation_k': 'methyl', 'methylation_r': 'methyl', 'ubiquitination_k': 'ubi', 'sumoylation_k': 'sumo', 'acetylation_k': 'acet', 'glycosylation_n': 'glyc'}
+depths()  : 16336 proteins global, 6 merged groups ['phospho', 'ubi', 'sumo', 'acet', 'methyl', 'glyc']
+pred path : /home/FCAM/juli/HRP/pdisjoint_runs_v2/phosphorylation_y__replica__baseline__split0__on_rebuilt.pred.tsv
+            exists=True
+augmented : /home/FCAM/juli/HRP/pdisjoint_runs_v2/phosphorylation_y__replica__ppi__split0__esm__on_rebuilt.pred.tsv
+            exists=True
+merged    : 7010 sites, 500 proteins, pos rate 0.1641
+fasta     : /home/FCAM/juli/HRP/deepmvp/DeepMVP/data/swiss_prot_human_20190214.fasta  (20413 records)
+            coverage by scheme [('first token', 0), ('pipe field 1', 500), ('pipe field 0', 0), ('before dash', 0)]
+            using 'pipe field 1': 500/500 predicted proteins matched
+candidates: median 17 per protein vs 11 rows retained (candidates must be >= rows)
+            0 proteins violate that -- must be 0
+depth     : min 1 median 16 max 178, 0 proteins at zero
+f(d)      : [0.0884 0.0961 0.102  0.1334 0.1279 0.1225] over edges [  1.   5.   9.  16.  25.  43. 178.]
+            median candidates per bin [11, 13, 17, 14, 22, 25]
+            monotone increasing: False (not required; anchor is the max)
+reference : bin 3 (f = 0.1334)
+q at a=0  : [0.0494 0.0412 0.0349 0.     0.0063 0.0124]
+q at a=1  : [0. 0. 0. 0. 0. 0.]  (must be all zero)
+burden    : at alpha=0, 128 of 5860 negatives flip (2.2%); observed positives 1150
