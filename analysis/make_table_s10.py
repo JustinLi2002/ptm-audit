@@ -47,10 +47,12 @@ def build(results, arm):
         out[f"lam{lam:g}_actual"] = sub.groupby("task")["actual_inflation"].mean()
 
     out["a0"] = grid[grid.alpha == 0].groupby("task")["d_auroc"].mean()
-    # A ratio is only meaningful where the denominator is an effect.  Below
-    # this magnitude the "retained fraction" is dominated by its denominator
-    # and reports numbers like -3900%.
-    out["retained_a0"] = (out["a0"] / out["a1"]).where(out["a1"] < -0.01)
+    # A ratio is only meaningful where the denominator is an effect and the
+    # effect keeps its sign.  Below this magnitude the "retained fraction" is
+    # dominated by its denominator and reports numbers like -3900%; where the
+    # effect crosses zero a negative "retained" percentage is meaningless.
+    out["retained_a0"] = ((out["a0"] / out["a1"])
+                          .where((out["a1"] < -0.01) & (out["a0"] < 0)))
     return out.sort_values("a1")
 
 
