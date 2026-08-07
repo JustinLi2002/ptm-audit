@@ -43,7 +43,10 @@ PPI_FEAT = f"{BASE}/notebooks/protein_features_ppi.npy"
 PPI_IDS = f"{BASE}/notebooks/protein_ids_ppi.json"
 ESM_FEAT = f"{BASE}/notebooks/protein_features_esm.npy"
 ESM_IDS = f"{BASE}/notebooks/protein_ids_esm.json"
-FEATS = {"ppi": (PPI_FEAT, PPI_IDS), "esm": (ESM_FEAT, ESM_IDS)}
+T5_FEAT = f"{BASE}/notebooks/protein_features_prott5.npy"
+T5_IDS = f"{BASE}/notebooks/protein_ids_prott5.json"
+FEATS = {"ppi": (PPI_FEAT, PPI_IDS), "esm": (ESM_FEAT, ESM_IDS),
+         "prott5": (T5_FEAT, T5_IDS)}
 
 MAX_EPOCHS, PATIENCE = 100, 10
 BATCH_TRAIN, BATCH_TEST, LR = 64, 512, 1e-3
@@ -192,7 +195,7 @@ def main():
                     choices=["baseline", "ppi", "shuffled"])
     ap.add_argument("--shuffle-seed", type=int, default=42,
                     help="seed for the protein-to-vector permutation")
-    ap.add_argument("--feat", default="ppi", choices=["ppi", "esm"])
+    ap.add_argument("--feat", default="ppi", choices=["ppi", "esm", "prott5"])
     ap.add_argument("--split-seed", type=int, required=True)
     ap.add_argument("--n-models", type=int, default=2)
     ap.add_argument("--max-train", type=int, default=0,
