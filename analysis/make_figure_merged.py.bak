@@ -21,7 +21,6 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.lines import Line2D
-from matplotlib.patches import Patch
 
 BASE = '/home/FCAM/juli/HRP'
 PTMS = ['phosphorylation_y', 'phosphorylation_st', 'ubiquitination_k',
@@ -35,11 +34,6 @@ PP = {'phosphorylation_y': 3.5, 'phosphorylation_st': 3.8,
       'ubiquitination_k': 12.6, 'sumoylation_k': 16.5, 'acetylation_k': 20.3,
       'methylation_k': 27.8, 'methylation_r': 31.6, 'glycosylation_n': 35.9}
 C_PPI, C_ESM, C_PART = '#1f77b4', '#d62728', '#bbbbbb'
-C_MARK = '0.30'          # shape channel only; colour means the family
-# Suffixed feature families. 'ppi' carries no suffix and holds the
-# baselines, so anything unmatched must fall through to it -- which is
-# why the list has to be explicit rather than a single '__esm' test.
-SUFFIXED = ('prott5', 'esm')
 
 plt.rcParams.update({'font.size': 8, 'axes.spines.top': False,
                      'axes.spines.right': False, 'figure.dpi': 300,
@@ -49,8 +43,7 @@ plt.rcParams.update({'font.size': 8, 'axes.spines.top': False,
 def load(metric='auroc'):
     R = defaultdict(dict)
     for f in glob.glob(f'{BASE}/pdisjoint_runs_v2/*.json'):
-        stem = os.path.basename(f)[:-5]
-        feat = next((k for k in SUFFIXED if stem.endswith('__' + k)), 'ppi')
+        feat = 'esm' if os.path.basename(f)[:-5].endswith('__esm') else 'ppi'
         r = json.load(open(f))
         for t in ('replica', 'rebuilt'):
             R[(r['ptm'], r['dataset'], t, feat)][(r['cond'], r['split_seed'])] = \
@@ -95,14 +88,13 @@ def main(out):
     axes[1, 0].set_ylabel(r'$\Delta$AUROC')
 
     fig.legend(handles=[
-        Patch(facecolor=C_PPI, edgecolor='none', label='interaction embedding'),
-        Patch(facecolor=C_ESM, edgecolor='none', label='frozen ESM-2'),
-        Line2D([], [], marker='o', ls='', mfc=C_MARK, mec=C_MARK,
+        Line2D([], [], marker='o', ls='', color=C_PPI, label='interaction embedding'),
+        Line2D([], [], marker='o', ls='', color=C_ESM, label='frozen ESM-2'),
+        Line2D([], [], marker='o', ls='', mfc='none', mec='k', color='k',
                label='real feature beats its permutation'),
-        Line2D([], [], marker='v', ls='', mfc='none', mec=C_MARK,
+        Line2D([], [], marker='v', ls='', mfc='none', mec='k', color='k',
                label='permutation beats the real feature'),
-        Line2D([], [], marker='.', ls='', color=C_PART,
-               label='individual partition'),
+        Line2D([], [], marker='o', ls='', color=C_PART, label='individual partition'),
     ], frameon=False, fontsize=6.5, loc='lower center', ncol=3,
         bbox_to_anchor=(0.5, -0.06))
     fig.tight_layout(rect=[0, 0.05, 1, 1])

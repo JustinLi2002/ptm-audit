@@ -64,7 +64,11 @@ def pred_path(ptm, train, cond, split, feat, test):
 def load_metrics(metric='auroc'):
     R = defaultdict(dict)
     for f in glob.glob(f'{BASE}/pdisjoint_runs_v2/*.json'):
-        feat = 'esm' if os.path.basename(f)[:-5].endswith('__esm') else 'ppi'
+        # 'ppi' has no suffix and holds the baselines, so unmatched files
+        # fall through to it; the list must be explicit, longest first.
+        stem = os.path.basename(f)[:-5]
+        feat = next((k for k in ('prott5', 'esm')
+                     if stem.endswith('__' + k)), 'ppi')
         r = json.load(open(f))
         for t in ('replica', 'rebuilt'):
             R[(r['ptm'], r['dataset'], t, feat)][(r['cond'], r['split_seed'])] = \
