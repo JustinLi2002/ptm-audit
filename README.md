@@ -52,7 +52,7 @@ recorded here instead.
 | Figure 2, annotation-depth mechanism | `figures/figure3.png` | `analysis/make_figures_v2.py`, `mechanism_chain_figure` |
 | Figure 3, cross-evaluation | `figures/figure4.png` | `analysis/make_figure_merged.py` |
 | Figure 4, variance structure | `figures/figure5.png` | `analysis/make_figures_v2.py`, `variance_figure` |
-| Figure 5, synthetic sweep | `results/figure6.png` | `analysis/synthetic_reversal.py --mode sweep` |
+| Figure 5, synthetic sweep | `figures/figure6.png` | `analysis/synthetic_reversal.py --mode sweep` |
 | Supplementary Figure S1, permutation control | `figures/figureS1.png` | `make_figures.py` |
 | Supplementary Figure S2, false-negative sensitivity | `figures/figure_s2_fn_sensitivity.png` | `analysis/make_figure_s2.py` |
 | Supplementary Figure S3, identity baseline | `figures/figure2.png` | `make_figures.py` |
@@ -61,6 +61,7 @@ recorded here instead.
 
 Supplementary Figure S3 was Figure 2 of an earlier draft and moved to the
 supplement when the Results were reordered; its file name did not follow.
+Figures 1, S1, S2 and S3 also have `.pdf` companions in the same directory.
 
 ## Four checks
 
@@ -433,7 +434,7 @@ the manuscript can be checked without rerunning anything:
     depth_*_thr.tsv / depth_*_unr.tsv       depth stratification, three channels
     cross_benchmark.tsv                     label homogeneity across benchmarks
     synthetic_demo.tsv                      the five-seed single-point comparison
-    figure6.tsv                             the full synthetic parameter sweep
+    figures/figure6_sweep.tsv               the full synthetic parameter sweep
 
 `table1.txt`, `summary.json`, `unseen_eval.txt` and the two checksum files are
 from the earlier round.
