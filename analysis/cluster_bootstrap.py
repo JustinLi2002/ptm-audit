@@ -20,8 +20,9 @@ Methods.
 import numpy as np
 import pandas as pd
 from scipy.stats import rankdata
+import os
 
-BASE = "/home/FCAM/juli/HRP"
+BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
 B = 2000
 PTMS = ['phosphorylation_st', 'phosphorylation_y', 'acetylation_k',
         'methylation_k', 'methylation_r', 'sumoylation_k',

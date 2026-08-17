@@ -22,8 +22,9 @@ import argparse
 
 import numpy as np
 import pandas as pd
+import os
 
-BASE = "/home/FCAM/juli/HRP"
+BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
 PTMS = ['phosphorylation_st', 'phosphorylation_y', 'ubiquitination_k',
         'sumoylation_k', 'acetylation_k', 'methylation_k', 'methylation_r',
         'glycosylation_n']

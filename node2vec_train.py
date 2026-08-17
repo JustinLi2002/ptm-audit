@@ -32,12 +32,12 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Train node2vec on STRING PPI network")
     parser.add_argument(
         "--input",
-        default="/home/FCAM/juli/HRP/data/9606.protein.physical.links.full.v12.0.txt.gz",
+        default=os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP") + "/data/9606.protein.physical.links.full.v12.0.txt.gz",
         help="Path to STRING physical links file (.txt.gz)"
     )
     parser.add_argument(
         "--outdir",
-        default="/home/FCAM/juli/HRP/results/",
+        default=os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP") + "/results/",
         help="Output directory for embeddings"
     )
     parser.add_argument(

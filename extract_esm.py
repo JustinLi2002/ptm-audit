@@ -21,7 +21,7 @@ import os
 import numpy as np
 import torch
 
-BASE = "/home/FCAM/juli/HRP"
+BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
 FASTA = f"{BASE}/pdisjoint/proteins.fasta"
 OUT_NPY = f"{BASE}/notebooks/protein_features_esm.npy"
 OUT_IDS = f"{BASE}/notebooks/protein_ids_esm.json"

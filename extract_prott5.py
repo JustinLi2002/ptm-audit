@@ -28,7 +28,7 @@ import re
 import numpy as np
 import torch
 
-BASE = "/home/FCAM/juli/HRP"
+BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
 FASTA = f"{BASE}/pdisjoint/proteins.fasta"
 MODEL = "Rostlab/prot_t5_xl_half_uniref50-enc"
 WINDOW, OVERLAP = 1022, 256

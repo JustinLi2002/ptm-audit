@@ -23,7 +23,7 @@ import numpy as np
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 
-BASE = '/home/FCAM/juli/HRP'
+BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
 PTMS = ['phosphorylation_y', 'phosphorylation_st', 'ubiquitination_k',
         'sumoylation_k', 'acetylation_k', 'methylation_k', 'methylation_r',
         'glycosylation_n']

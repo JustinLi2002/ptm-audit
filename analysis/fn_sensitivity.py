@@ -54,13 +54,14 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.metrics import average_precision_score, roc_auc_score
+import os
 
 # ---------------------------------------------------------------------------
 # adapter.  These are the only project-specific bindings; everything below is
 # generic.  Definitions are imported rather than restated so that d matches
 # Figure 3 exactly.
 # ---------------------------------------------------------------------------
-BASE = Path("/home/FCAM/juli/HRP")
+BASE = Path(os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP"))
 RUNS = BASE / "pdisjoint_runs_v2"
 sys.path.insert(0, str(BASE / "ptm-audit" / "analysis"))
 sys.path.insert(0, str(BASE / "ptm-audit"))

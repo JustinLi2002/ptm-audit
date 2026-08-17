@@ -34,7 +34,7 @@ import torch.nn.functional as F
 from sklearn.metrics import roc_auc_score, average_precision_score
 from torch.utils.data import Dataset, DataLoader
 
-BASE = "/home/FCAM/juli/HRP"
+BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
 SPLIT_DIR = f"{BASE}/pdisjoint"
 OUTDIR = f"{BASE}/pdisjoint_runs_v2"
 CKPT_DIR = f"{BASE}/checkpoints_pdisjoint"

@@ -17,8 +17,9 @@ Two findings recorded here:
 """
 import collections
 import pandas as pd
+import os
 
-BASE = "/home/FCAM/juli/HRP"
+BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
 PTMS = ['acetylation_k', 'glycosylation_n', 'methylation_k', 'methylation_r',
         'phosphorylation_st', 'phosphorylation_y', 'sumoylation_k',
         'ubiquitination_k']

@@ -31,7 +31,7 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
-BASE = '/home/FCAM/juli/HRP'
+BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
 PTMS = ['phosphorylation_y', 'phosphorylation_st', 'ubiquitination_k',
         'sumoylation_k', 'acetylation_k', 'methylation_k', 'methylation_r',
         'glycosylation_n']
@@ -105,7 +105,8 @@ def feature(feat):
 # ------------------------------------------------------------------ Figure 4
 def mechanism_chain_figure(out):
     dm, _ = depths()
-    fig, ax = plt.subplots(1, 3, figsize=(7.6, 2.9))
+    fig, axg = plt.subplots(2, 2, figsize=(7.2, 5.6))
+    ax = axg.ravel()
     pipe = make_pipeline(StandardScaler(), RidgeCV(alphas=np.logspace(-2, 4, 13)))
     kf = KFold(5, shuffle=True, random_state=0)
 
@@ -189,7 +190,40 @@ def mechanism_chain_figure(out):
                                  label='unrestricted labels')],
                  frameon=False, fontsize=5.5, loc='lower left',
                  bbox_to_anchor=(-0.02, -0.02))
-    fig.tight_layout(w_pad=1.8)
+    # (d) within-task depth gradient. Read from depth_stratified.py output
+    #     rather than recomputed, so the panel and the text share one source.
+    thr = pd.read_csv(f'{BASE}/depth_esm2_thr.tsv', sep='\t')
+    unr = pd.read_csv(f'{BASE}/depth_esm2_unr.tsv', sep='\t')
+
+    def _pooled(df, task):
+        """Weight each depth bin by its site count when pooling over the
+        candidate-count strata, so a stratum holding few sites does not carry
+        equal weight."""
+        g = df[df.task == task].groupby('depth_bin')
+        return (g.depth_median.first(),
+                g.apply(lambda x: np.average(x.d_pct.fillna(0),
+                                             weights=x.n_sites)))
+
+    cmap = plt.get_cmap('tab10')
+    for k, p_ in enumerate(PTMS):
+        for df_, ls in ((thr, '-'), (unr, '--')):
+            if p_ not in set(df_.task):
+                continue
+            xv, yv = _pooled(df_, p_)
+            ax[3].plot(xv, yv, ls=ls, marker='o', ms=2.5, lw=1.0,
+                       color=cmap(k % 10), alpha=1.0 if ls == '-' else .5)
+    ax[3].axhline(0, color='k', lw=.6, ls='--')
+    ax[3].set_xscale('log')
+    ax[3].set_xlabel('annotation depth (bin median)')
+    ax[3].set_ylabel(r'$\Delta$ mean score percentile')
+    ax[3].set_title('d  Shallow proteins are pushed up', loc='left', fontsize=8)
+    ax[3].legend(handles=[Line2D([], [], color='0.35', ls='-',
+                                 label='threshold-sampled training'),
+                          Line2D([], [], color='0.35', ls='--',
+                                 label='unrestricted training')],
+                 frameon=False, fontsize=5.5, loc='lower left')
+
+    fig.tight_layout(w_pad=1.8, h_pad=1.4)
     fig.savefig(f'{out}/figure3.png')
     plt.close(fig)
 

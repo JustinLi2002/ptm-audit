@@ -27,7 +27,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import roc_auc_score
 
-BASE = "/home/FCAM/juli/HRP"
+BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
 RETRAIN = f"{BASE}/retrain"
 INF = f"{BASE}/inference_out"
 

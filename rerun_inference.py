@@ -34,7 +34,7 @@ import torch.nn.functional as F
 from sklearn.metrics import roc_auc_score, average_precision_score
 from torch.utils.data import Dataset, DataLoader
 
-BASE = "/home/FCAM/juli/HRP"
+BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
 RETRAIN = f"{BASE}/retrain"
 OUTDIR = f"{BASE}/inference_out"
 BATCH_TEST = 512

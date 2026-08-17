@@ -21,7 +21,7 @@ import pandas as pd
 LABEL = {
     "phosphorylation_st": "Phosphorylation S/T", "phosphorylation_y": "Phosphorylation Y",
     "ubiquitination_k": "Ubiquitination K", "sumoylation_k": "Sumoylation K",
-    "acetylation_k": "Acetylation K", "methylation_k": "Methylation K",
+    "acetylation_k": "Acetylation K", "methylation_k": "Methylation K/R",
     "methylation_r": "Methylation R", "glycosylation_n": "N-glycosylation",
 }
 FOLD = {"methylation_k": "methyl", "methylation_r": "methyl"}

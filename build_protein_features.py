@@ -18,6 +18,7 @@ import argparse
 import json
 import numpy as np
 import pandas as pd
+import os
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -27,17 +28,17 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Build protein PPI feature matrix")
     parser.add_argument(
         "--input",
-        default="/home/FCAM/juli/HRP/notebooks/node2vec_with_uniprot.csv",
+        default=os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP") + "/notebooks/node2vec_with_uniprot.csv",
         help="Path to node2vec_with_uniprot.csv"
     )
     parser.add_argument(
         "--out_npy",
-        default="/home/FCAM/juli/HRP/notebooks/protein_features_ppi.npy",
+        default=os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP") + "/notebooks/protein_features_ppi.npy",
         help="Output path for the .npy embedding matrix"
     )
     parser.add_argument(
         "--out_ids",
-        default="/home/FCAM/juli/HRP/notebooks/protein_ids_ppi.json",
+        default=os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP") + "/notebooks/protein_ids_ppi.json",
         help="Output path for the protein ID list (.json)"
     )
     return parser.parse_args()

@@ -35,7 +35,7 @@ import torch.nn.functional as F
 from sklearn.metrics import roc_auc_score, average_precision_score
 from torch.utils.data import Dataset, DataLoader
 
-BASE = "/home/FCAM/juli/HRP"
+BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
 DATA = f"{BASE}/allbig/all_data"
 OUTDIR = f"{BASE}/alldata_runs"
 PPI_FEAT = f"{BASE}/notebooks/protein_features_ppi.npy"

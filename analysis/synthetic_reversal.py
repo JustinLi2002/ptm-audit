@@ -298,5 +298,5 @@ if __name__ == '__main__':
     ap.add_argument('--seeds', type=int, default=3)
     ap.add_argument('--n-entities', type=int, default=6000)
     ap.add_argument('--out', default='.')
-    a, _ = ap.parse_known_args()
+    a = ap.parse_args()
     (demo if a.mode == 'demo' else sweep)(a)

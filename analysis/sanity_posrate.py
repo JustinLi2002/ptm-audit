@@ -18,8 +18,9 @@ a reviewer to raise.
 import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
+import os
 
-BASE = "/home/FCAM/juli/HRP"
+BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
 PTMS = ['phosphorylation_y', 'phosphorylation_st', 'ubiquitination_k',
         'sumoylation_k', 'acetylation_k', 'methylation_k', 'methylation_r',
         'glycosylation_n']
