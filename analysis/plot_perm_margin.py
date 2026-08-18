@@ -47,33 +47,49 @@ def main():
 
     fig, ax = plt.subplots(1, 2, figsize=(6.8, 3.0))
 
+    # Labels are placed away from the zero line, which several points sit on:
+    # a label at a fixed offset lands on the dashed rule and is unreadable.
+    def place(a, x, y, t, xs):
+        # Above the marker for a positive margin, below for a negative one, so no
+        # label lands on the zero rule that several points sit against; and to the
+        # left for points near the right edge, which would otherwise run off it.
+        lo, hi = min(xs), max(xs)
+        right = x < lo + 0.72 * (hi - lo)
+        a.annotate(t, (x, y), fontsize=5.6,
+                   xytext=(4 if right else -4, 5 if y >= 0 else -9),
+                   ha="left" if right else "right",
+                   va="bottom" if y >= 0 else "top",
+                   textcoords="offset points")
+
+    xs0 = list(PUREPOS.values())
     for t in tasks:
         ex = t == EXCLUDED
         ax[0].scatter(PUREPOS[t], MARGIN[t], s=34,
                       facecolor="white" if ex else "#3b6ea5",
                       edgecolor="#c0392b" if ex else "#3b6ea5",
                       linewidth=1.4 if ex else 0, zorder=3)
-        ax[0].annotate(t, (PUREPOS[t], MARGIN[t]), fontsize=5.6,
-                       xytext=(3, 3), textcoords="offset points")
+        place(ax[0], PUREPOS[t], MARGIN[t], t, xs0)
     ax[0].axhline(0, color="k", lw=.6, ls="--")
     ax[0].set_xlabel("pure-positive share of the test partition (%)", fontsize=8)
     ax[0].set_ylabel("real minus permuted, $\\Delta$AUROC", fontsize=8)
-    ax[0].set_title(f"a  $\\rho$ = {r8.statistic:+.2f} over eight tasks, "
-                    f"{r7.statistic:+.2f} over seven", loc="left", fontsize=8)
+    fmt = lambda v: f"{v:+.2f}".replace("-", "\u2212")
+    ax[0].set_title(f"a  $\\rho$ = {fmt(r8.statistic)} over eight tasks, "
+                    f"{fmt(r7.statistic)} over seven", loc="left", fontsize=8)
 
+    xs1 = list(BASELINE.values())
     for t in tasks:
         ex = t == EXCLUDED
         ax[1].scatter(BASELINE[t], MARGIN[t], s=34,
                       facecolor="white" if ex else "#3b6ea5",
                       edgecolor="#c0392b" if ex else "#3b6ea5",
                       linewidth=1.4 if ex else 0, zorder=3)
-        ax[1].annotate(t, (BASELINE[t], MARGIN[t]), fontsize=5.6,
-                       xytext=(3, 3), textcoords="offset points")
+        place(ax[1], BASELINE[t], MARGIN[t], t, xs1)
     ax[1].axhline(0, color="k", lw=.6, ls="--")
     ax[1].set_xlabel("sequence-only AUROC", fontsize=8)
     ax[1].set_title("b  why N-glycosylation is set aside", loc="left", fontsize=8)
 
     for x in ax:
+        x.margins(y=0.16, x=0.10)
         x.tick_params(labelsize=7)
         for sp in ("top", "right"):
             x.spines[sp].set_visible(False)
@@ -86,4 +102,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-
