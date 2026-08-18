@@ -28,7 +28,7 @@ MERGE = {"methylation_k": "methyl", "methylation_r": "methyl"}
 LABEL = {
     "phosphorylation_st": "Phospho S/T", "phosphorylation_y": "Phospho Y",
     "ubiquitination_k": "Ubiquitination K", "sumoylation_k": "Sumoylation K",
-    "acetylation_k": "Acetylation K", "methylation_k": "Methylation K",
+    "acetylation_k": "Acetylation K", "methylation_k": "Methylation K/R",
     "methylation_r": "Methylation R", "glycosylation_n": "N-glycosylation",
 }
 ARMS = {"esm": ("Language model", "#1f4e79"),
