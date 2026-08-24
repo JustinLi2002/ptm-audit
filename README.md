@@ -191,7 +191,7 @@ SLURM submission scripts are in `slurm/`.
 | Supplementary Tables S1, S2 | `analysis/cluster_bootstrap.py` |
 | Supplementary Table S5, annotation depth | `analysis/mechanism_chain.py` |
 | Supplementary Tables S6, S7, S8 | `audit_ptm_benchmark.py`, `restricted_eval.py` |
-| Supplementary Table S9, current release | `train_alldata.py`, `summarize_pdisjoint.py` |
+| Supplementary Table S9, current release | `train_alldata.py`, then `analysis/summarize_alldata.py` (AUROC, and the across-seed spread quoted in Note S6) and `analysis/s9_auprc_v2.py` (the AUPRC companion) |
 | Supplementary Table S10, false-negative sensitivity | `analysis/fn_sensitivity.py`, `analysis/make_table_s10.py` |
 | Supplementary Table S12, cross-benchmark homogeneity | `analysis/benchmark_homogeneity.py` |
 | Variance structure, all tasks | `analysis/icc_by_task.py [--feat esm]`, `analysis/icc_audit_v2.py` |
@@ -299,14 +299,22 @@ reported means by 4% to 17% without changing any sign.
 ## Embeddings
 
     node2vec_train.py         # STRING v12.0 physical subnetwork -> ENSP embeddings
-    (UniProt ID mapping web service -> node2vec_with_uniprot.csv)
+    (UniProt ID mapping web service -> idmapping_*.tsv)
+    map_string_to_uniprot.py  # emb + idmapping -> node2vec_with_uniprot.csv
     build_protein_features.py # csv -> protein_features_ppi.npy + protein_ids_ppi.json
     extract_esm.py            # frozen mean-pooled ESM-2 650M -> protein_features_esm.npy
     extract_prott5.py         # frozen mean-pooled ProtT5-XL-U50
 
-The ENSP-to-UniProt step was performed through the UniProt web mapping service
-and is not scriptable; the resulting table is archived in `data/` so the chain
-can be verified end to end. Because node2vec is stochastic, rerunning
+The ENSP-to-UniProt lookup itself goes through the UniProt web mapping service
+and is not scriptable; its output table is archived in `data/` so the chain can
+be verified end to end. Collapsing that table onto the embedding *is* scripted,
+in `map_string_to_uniprot.py`: 377 of the 18,423 STRING nodes carry no
+accession and 37 accessions are reached by more than one node, so a
+duplicate-handling policy has to be chosen. Run it with `--verify` first — it
+rebuilds the matrix under each policy and reports which one reproduces the
+archived `protein_features_ppi.npy` — then rerun with that policy. This is the
+step whose arithmetic Supplementary Note S10 reports. Because node2vec is
+stochastic, rerunning
 `node2vec_train.py` produces a functionally equivalent but not bitwise-identical
 embedding — the archived matrix is the one used in the manuscript.
 

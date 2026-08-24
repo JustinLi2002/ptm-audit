@@ -13,8 +13,10 @@ taken seriously.
 Parameterisation
 ----------------
 Let f(d) be the OBSERVED positive rate among candidate sites, as a function of
-merged-type annotation depth d, and let f_ref be its value in the deepest
-stratum.  Write the TRUE rate as
+merged-type annotation depth d, and let f_ref be its LARGEST value across
+strata -- not its value in the deepest stratum, which is not the same thing
+because f is not monotone in depth.  See posterior() for why the maximum is
+the right anchor.  Write the TRUE rate as
 
     g(d) = f_ref * (f(d) / f_ref) ** alpha
     pi(d) = f(d) / g(d) = (f(d) / f_ref) ** (1 - alpha)
@@ -46,6 +48,7 @@ Usage
 """
 
 import argparse
+import hashlib
 import json
 import sys
 from collections import defaultdict
@@ -352,8 +355,13 @@ def run(arm, alphas, draws, n_bins, seed, out, inflations=None):
 
             for alpha, infl in grid:
                 q, ref_bin = posterior(f, alpha)
+                # hashlib, not hash(): PYTHONHASHSEED randomises str hashing
+                # per process, so hash() would draw a different label set in
+                # every run and the archived numbers would not reproduce.
+                # Same construction as crosseval_bootstrap.py.
+                tag = f"{seed}|{task}|{split}|{round(alpha, 4)}".encode()
                 rng = np.random.default_rng(
-                    abs(hash((task, split, round(alpha, 4), seed))) % 2**32)
+                    int.from_bytes(hashlib.sha256(tag).digest()[:8], "little"))
                 da, dp = delta_under_flips(frame, q[bins], rng, draws)
                 rows.append(dict(
                     task=task, split=split, alpha=alpha,

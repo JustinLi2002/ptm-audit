@@ -108,13 +108,16 @@ def link3(dm):
 def knn_control():
     print(f"\n[kNN control] score vs k={K} neighbourhood positive rate, "
           "neighbour labels from both constructions")
-    print(f"{'PTM':20s} {'tPP%':>6s} {'nbr=replica':>12s} {'nbr=rebuilt':>12s} "
-          f"{'diff':>8s}")
+    print("  the baseline columns are the control: a sequence-only model has no "
+          "protein-constant\n  input, so its score should not track the "
+          "neighbourhood at all")
+    print(f"{'PTM':20s} {'tPP%':>6s} {'base|rep':>9s} {'base|reb':>9s} "
+          f"{'+feat|rep':>10s} {'+feat|reb':>10s} {'diff':>8s}")
     rows = []
     for p in PTMS:
         out = {}
         for src in ('replica', 'rebuilt'):
-            v = []
+            v = {'baseline': [], 'ppi': []}
             for s in range(3):
                 sp = pd.read_csv(f'{BASE}/pdisjoint/split_seed{s}.csv') \
                        .set_index('accession')['split'].to_dict()
@@ -125,16 +128,27 @@ def knn_control():
                 pr = pr[[q in idx for q in pr.index]]
                 nn = NearestNeighbors(n_neighbors=min(K, len(pr))) \
                     .fit(feats[[idx[q] for q in pr.index]])
-                d = pd.read_csv(f'{BASE}/pdisjoint_runs_v2/{p}__replica__ppi__'
-                                f'split{s}{SUF}__on_rebuilt.pred.tsv', sep='\t')
-                g = d.groupby('protein')['y_pred'].mean().reset_index()
-                g = g[g.protein.isin(idx)]
-                _, nb = nn.kneighbors(feats[[idx[q] for q in g.protein]])
-                v.append(spearmanr(pr.values[nb].mean(axis=1), g.y_pred).statistic)
-            out[src] = np.mean(v)
-        rows.append((PP[p], out['replica'] - out['rebuilt']))
-        print(f"{p:20s} {PP[p]:5.1f}% {out['replica']:+12.3f} "
-              f"{out['rebuilt']:+12.3f} {out['replica']-out['rebuilt']:+8.3f}")
+                # both conditions are scored against the SAME neighbourhood,
+                # so the only thing that differs is the model's own scores
+                for cond in ('baseline', 'ppi'):
+                    suf = '' if cond == 'baseline' else SUF
+                    d = pd.read_csv(f'{BASE}/pdisjoint_runs_v2/{p}__replica__'
+                                    f'{cond}__split{s}{suf}__on_rebuilt.pred.tsv',
+                                    sep='\t')
+                    g = d.groupby('protein')['y_pred'].mean().reset_index()
+                    g = g[g.protein.isin(idx)]
+                    _, nb = nn.kneighbors(feats[[idx[q] for q in g.protein]])
+                    v[cond].append(spearmanr(pr.values[nb].mean(axis=1),
+                                             g.y_pred).statistic)
+            for cond in ('baseline', 'ppi'):
+                out[cond, src] = np.mean(v[cond])
+        # diff and the rank correlation below stay defined on the augmented arm,
+        # unchanged from before the baseline columns were added
+        rows.append((PP[p], out['ppi', 'replica'] - out['ppi', 'rebuilt']))
+        print(f"{p:20s} {PP[p]:5.1f}% "
+              f"{out['baseline', 'replica']:+9.3f} {out['baseline', 'rebuilt']:+9.3f} "
+              f"{out['ppi', 'replica']:+10.3f} {out['ppi', 'rebuilt']:+10.3f} "
+              f"{rows[-1][1]:+8.3f}")
     ng = [r for r, p in zip(rows, PTMS) if p != 'glycosylation_n']
     print(f"\n  rho(diff, purepos) n8 = "
           f"{spearmanr([r[0] for r in rows], [r[1] for r in rows]).statistic:+.3f}"

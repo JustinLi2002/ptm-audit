@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Figures 4-7 of the revised manuscript, generated from the run outputs.
+"""Main-text figures, generated from the run outputs.
 
 Unlike make_figures.py, which draws from hard-coded values, this script reads
 pdisjoint_runs_v2/ and the feature matrices directly, so every panel is
@@ -7,10 +7,14 @@ reproducible from the archived data.
 
     python make_figures_v2.py --out figures/
 
-Fig 4  annotation-depth mechanism, three panels
-Fig 5  cross-evaluation of the interaction channel, 2x2
-Fig 6  cross-evaluation of the frozen language model channel, 2x2
-Fig 7  variance structure: within-protein scatter and mean-square ratios
+Output names carry the draft numbering; the "Figure and table map" section of
+README.md gives the correspondence to the manuscript.
+
+  figure3.png  annotation-depth mechanism, four panels   (manuscript Figure 2)
+  figure5.png  variance structure: within-protein scatter and mean-square
+               ratios                                    (manuscript Figure 4)
+  cross_eval_figure() writes the file name its caller supplies: the 2x2
+  cross-evaluation of one feature channel
 """
 import argparse
 import glob
