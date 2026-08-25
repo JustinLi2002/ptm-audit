@@ -1,0 +1,15 @@
+reference proteome: 20413 sequences;  threshold T = 10
+
+task                    seen: unobs w   n prot  all: unobs w   n prot
+---------------------------------------------------------------------
+Phosphorylation S/T             0.472    13347         0.605    20408
+Phosphorylation Y               0.244     4784         0.642    19977
+Acetylation K                   0.817     6745         0.921    20295
+Methylation K/R                 0.936     5684         0.974    20404
+Methylation R                   0.915     3824         0.977    20341
+Sumoylation K                   0.779     6353         0.913    20295
+Ubiquitination K                0.612    11652         0.750    20295
+N-Glycosylation N               0.889     2977         0.977    20123
+
+  seen universe : 0.244 - 0.936
+  all  universe : 0.605 - 0.977

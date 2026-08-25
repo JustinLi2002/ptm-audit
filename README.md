@@ -198,6 +198,26 @@ SLURM submission scripts are in `slurm/`.
 | Supplementary Note S2, homology control | `analysis/homology_control.py` |
 | Supplementary Note S9, depth stratification | `analysis/depth_stratified.py` |
 | Per-protein positive rate check | `analysis/sanity_posrate.py` |
+| Share of deployment negatives below the threshold | `analysis/unobserved_weight.py` |
+
+### The share of deployment negatives the threshold removes
+
+`analysis/unobserved_weight.py` reports, per task, the fraction of the negatives
+a predictor is actually applied to that sit on proteins carrying fewer than ten
+annotated sites of the merged type — the region a threshold-sampled benchmark
+supplies no negatives from at all. It weights each protein by the candidate
+residues it contributes, so it needs only a residue count and an annotation
+depth: no labels, no negatives from the benchmark, and no trained model. That
+makes it computable for any released benchmark from its annotations plus a
+reference proteome, and computable by a benchmark builder while choosing the
+threshold rather than afterwards.
+
+Two universes are reported because they answer different questions. `all` counts
+every protein in the reference proteome, which is the population a predictor
+meets — most proteins it sees carry no annotated site and therefore fall below
+any positive threshold by construction. `seen` restricts to proteins already
+carrying at least one site of the task, which is the population the
+reconstructions cover and a conservative floor. The manuscript quotes both.
 
 ### Confidence intervals for the cross-evaluation
 
