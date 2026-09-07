@@ -70,7 +70,7 @@ def main(out):
     order = sorted(PTMS, key=lambda p: PP[p])
     cells = [('replica', 'replica'), ('replica', 'rebuilt'),
              ('rebuilt', 'replica'), ('rebuilt', 'rebuilt')]
-    names = {'replica': 'threshold-sampled', 'rebuilt': 'naturally sampled'}
+    names = {'replica': 'threshold negatives', 'rebuilt': 'natural negatives'}
 
     fig, axes = plt.subplots(2, 2, figsize=(7.0, 5.4), sharey=True, sharex=True)
     for ax, (tr, te) in zip(axes.ravel(), cells):

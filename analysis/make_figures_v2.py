@@ -189,9 +189,9 @@ def mechanism_chain_figure(out):
     ax[2].set_ylabel(r'$\rho$(score, neighbour pos. rate)', fontsize=7)
     ax[2].set_title('c  Neighbourhood labels', loc='left', fontsize=8)
     ax[2].legend(handles=[Line2D([], [], marker='o', ls='', color=C_PPI,
-                                 label='threshold-sampled labels'),
+                                 label='threshold labels'),
                           Line2D([], [], marker='o', ls='', color=C_SEQ,
-                                 label='unrestricted labels')],
+                                 label='natural labels')],
                  frameon=False, fontsize=5.5, loc='lower left',
                  bbox_to_anchor=(-0.02, -0.02))
     # (d) within-task depth gradient. Read from depth_stratified.py output
@@ -222,9 +222,9 @@ def mechanism_chain_figure(out):
     ax[3].set_ylabel(r'$\Delta$ mean score percentile')
     ax[3].set_title('d  Shallow proteins are pushed up', loc='left', fontsize=8)
     ax[3].legend(handles=[Line2D([], [], color='0.35', ls='-',
-                                 label='threshold-sampled training'),
+                                 label='threshold training'),
                           Line2D([], [], color='0.35', ls='--',
-                                 label='unrestricted training')],
+                                 label='natural training')],
                  frameon=False, fontsize=5.5, loc='lower left')
 
     fig.tight_layout(w_pad=1.8, h_pad=1.4)
@@ -238,7 +238,7 @@ def cross_eval_figure(feat, fname, out, title):
     fig, axes = plt.subplots(2, 2, figsize=(6.8, 5.0), sharey=True)
     cells = [('replica', 'replica'), ('replica', 'rebuilt'),
              ('rebuilt', 'replica'), ('rebuilt', 'rebuilt')]
-    names = {'replica': 'threshold-sampled', 'rebuilt': 'naturally sampled'}
+    names = {'replica': 'threshold negatives', 'rebuilt': 'natural negatives'}
     order = sorted(PTMS, key=lambda p: PP[p])
     for ax, (tr, te) in zip(axes.ravel(), cells):
         for i, p in enumerate(order):
@@ -296,7 +296,7 @@ def variance_figure(out):
     axa.set_xticks([9, 28])
     axa.set_xticklabels(['sequence only', 'with interaction channel'])
     axa.set_ylabel('predicted score')
-    axa.set_title('a  Acetylation K, 18 test proteins', loc='left', fontsize=8)
+    axa.set_title('a  Acetylation K, 18 of 662 test proteins shown', loc='left', fontsize=8)
 
     # (b) MSW ratio, all tasks
     axb = fig.add_subplot(gs[1])
@@ -320,7 +320,7 @@ def variance_figure(out):
             ys.append(np.mean(r))
         axb.plot(range(8), ys, marker=mk, ms=4, lw=.8, color=col,
                  ls=('-' if tr == 'replica' else ':'),
-                 label=f'{"threshold" if tr=="replica" else "unrestricted"}-trained, '
+                 label=f'{"threshold" if tr=="replica" else "natural"}-trained, '
                        f'{"interaction" if feat=="ppi" else "ESM-2"}')
     axb.axhline(1.0, color='k', lw=.7, ls='--')
     axb.set_yscale('log')
