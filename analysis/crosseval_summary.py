@@ -31,7 +31,7 @@ LABELS = {'ppi': 'interaction embedding',
           'esm': 'frozen ESM-2 650M',
           'prott5': 'frozen ProtT5-XL-U50'}
 
-# pure-positive share of the rebuilt-evaluated test partitions, mean over seeds
+# pure-positive share of the threshold-sampled (replica) test partitions, mean over seeds
 PP = {'phosphorylation_y': 3.5, 'phosphorylation_st': 3.8,
       'ubiquitination_k': 12.6, 'sumoylation_k': 16.5, 'acetylation_k': 20.3,
       'methylation_k': 27.8, 'methylation_r': 31.6, 'glycosylation_n': 35.9}
