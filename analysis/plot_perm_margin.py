@@ -13,11 +13,13 @@ geometry instead of taking the exclusion on trust.
 """
 import argparse
 import sys
+from itertools import permutations
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from scipy.stats import spearmanr
+import numpy as np
+from scipy.stats import rankdata, spearmanr
 
 # real minus permuted, interaction embedding, threshold-trained, natural
 # negatives; means over three partitions. From crosseval_verify.tsv.
@@ -32,6 +34,20 @@ BASELINE = {"Phospho S/T": 0.8712, "Phospho Y": 0.8005, "Acetyl K": 0.7995,
             "Meth K/R": 0.7356, "Meth R": 0.7678, "Sumo K": 0.7710,
             "Ubiq K": 0.7851, "N-Glyc N": 0.9615}
 EXCLUDED = "N-Glyc N"
+
+
+def exact_p(x, y):
+    """Two-sided exact permutation p for Spearman's rho: the share of all n!
+    pairings of x with y whose |rho| is at least the observed |rho|. The p value
+    spearmanr returns is a t approximation, which is loose with seven or eight
+    tasks."""
+    rx = rankdata(x)
+    ry = np.array(list(permutations(rankdata(y))))
+    rx = rx - rx.mean()
+    ry = ry - ry.mean(axis=1, keepdims=True)
+    rho = ry @ rx / np.sqrt((ry ** 2).sum(axis=1) * (rx ** 2).sum())
+    obs = abs(spearmanr(x, y).statistic)
+    return float(np.mean(np.abs(rho) >= obs - 1e-9))
 
 
 def main():
@@ -96,8 +112,10 @@ def main():
     fig.tight_layout()
     fig.savefig(a.out, dpi=a.dpi, bbox_inches="tight")
     print(f"wrote {a.out}")
-    print(f"  rho over eight tasks {r8.statistic:+.3f}  p = {r8.pvalue:.4f}")
-    print(f"  rho excluding {EXCLUDED} {r7.statistic:+.3f}  p = {r7.pvalue:.4f}")
+    p8 = exact_p([PUREPOS[t] for t in tasks], [MARGIN[t] for t in tasks])
+    p7 = exact_p([PUREPOS[t] for t in keep], [MARGIN[t] for t in keep])
+    print(f"  rho over eight tasks {r8.statistic:+.3f}  exact p = {p8:.4f}")
+    print(f"  rho excluding {EXCLUDED} {r7.statistic:+.3f}  exact p = {p7:.4f}")
 
 
 if __name__ == "__main__":

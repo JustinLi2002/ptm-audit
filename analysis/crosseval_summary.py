@@ -16,9 +16,10 @@ import glob
 import json
 import os
 from collections import defaultdict
+from itertools import permutations
 
 import numpy as np
-from scipy.stats import spearmanr
+from scipy.stats import rankdata, spearmanr
 
 BASE = os.environ.get("PTM_AUDIT_BASE", "/home/FCAM/juli/HRP")
 PTMS = ['phosphorylation_y', 'phosphorylation_st', 'ubiquitination_k',
@@ -35,6 +36,20 @@ LABELS = {'ppi': 'interaction embedding',
 PP = {'phosphorylation_y': 3.5, 'phosphorylation_st': 3.8,
       'ubiquitination_k': 12.6, 'sumoylation_k': 16.5, 'acetylation_k': 20.3,
       'methylation_k': 27.8, 'methylation_r': 31.6, 'glycosylation_n': 35.9}
+
+
+def exact_p(x, y):
+    """Two-sided exact permutation p for Spearman's rho: the share of all n!
+    pairings of x with y whose |rho| is at least the observed |rho|. The p value
+    spearmanr returns is a t approximation, which is loose with seven or eight
+    tasks."""
+    rx = rankdata(x)
+    ry = np.array(list(permutations(rankdata(y))))
+    rx = rx - rx.mean()
+    ry = ry - ry.mean(axis=1, keepdims=True)
+    rho = ry @ rx / np.sqrt((ry ** 2).sum(axis=1) * (rx ** 2).sum())
+    obs = abs(spearmanr(x, y).statistic)
+    return float(np.mean(np.abs(rho) >= obs - 1e-9))
 
 
 def feat_of(path):
@@ -106,11 +121,13 @@ def per_family(a):
                 r8 = spearmanr([PP[p] for p in PTMS], dps).statistic
                 r7 = spearmanr([PP[PTMS[i]] for i in ng],
                                [dps[i] for i in ng]).statistic
+                p8 = exact_p([PP[p] for p in PTMS], dps)
+                p7 = exact_p([PP[PTMS[i]] for i in ng], [dps[i] for i in ng])
                 print(f"{'MEAN':20s} {'':6s} {'':8s} {np.mean(dps):+9.4f} "
                       f"{np.mean(dms):+9.4f} {'':10s} "
                       f"{sum(1 for x in dps if x > 0)}/8 {tot:2d}/24")
-                print(f"  rho(dFeat, purepos): n8={r8:+.3f}  "
-                      f"n7(excl N-glyc)={r7:+.3f}")
+                print(f"  rho(dFeat, purepos): n8={r8:+.3f} (exact p={p8:.4f})  "
+                      f"n7(excl N-glyc)={r7:+.3f} (exact p={p7:.4f})")
 
 
 def across_families(avail):
