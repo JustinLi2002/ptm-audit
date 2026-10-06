@@ -31,3 +31,4 @@ N-Glycosylation N        0.507     0.9751     0.9763     0.9044   +0.0012   -0.0
   mean Δ(permuted) -0.0840   positive in 0/8
 
   homogeneity vs Δ(+PPI): Spearman ρ = -0.452 (n=8)
+  excluding N-glycosylation: Spearman ρ = -0.714 (n=7)

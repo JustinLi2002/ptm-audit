@@ -51,6 +51,23 @@ def pearson(a, b):
     return num / den if den else float('nan')
 
 
+def spearman(a, b):
+    """Spearman rank correlation: Pearson on ranks, ties given their mean rank."""
+    def ranks(v):
+        order = sorted(range(len(v)), key=lambda i: v[i])
+        r = [0.0] * len(v)
+        i = 0
+        while i < len(order):
+            j = i
+            while j + 1 < len(order) and v[order[j + 1]] == v[order[i]]:
+                j += 1
+            for k in range(i, j + 1):
+                r[order[k]] = (i + j) / 2 + 1
+            i = j + 1
+        return r
+    return pearson(ranks(a), ranks(b))
+
+
 def paired_t(xs, ys):
     """Two-sided paired t-test; returns (t, df). p looked up separately."""
     d = [x - y for x, y in zip(xs, ys)]
@@ -114,6 +131,18 @@ def main():
     ys = [IDENTITY[p][0] - IDENTITY[p][1] for p in ORDER if R[p].get('baseline')]
     print(f'\n  pure-positive share vs identity drop: r = {pearson(xs, ys):.3f} '
           f'(n={len(xs)})')
+    print(f'  pure-positive share vs identity drop: Spearman rho = '
+          f'{spearman(xs, ys):.3f} (n={len(xs)})')
+    # methylation K/R contains methylation R; average the two into one unit
+    ps = [p for p in ORDER if R[p].get('baseline')]
+    meth = ('methylation_k', 'methylation_r')
+    if all(m in ps for m in meth):
+        cx = ([PUREPOS[p] for p in ps if p not in meth] +
+              [sum(PUREPOS[m] for m in meth) / 2])
+        cy = ([IDENTITY[p][0] - IDENTITY[p][1] for p in ps if p not in meth] +
+              [sum(IDENTITY[m][0] - IDENTITY[m][1] for m in meth) / 2])
+        print(f'  same, the two methylation tasks averaged into one: Spearman rho = '
+              f'{spearman(cx, cy):.3f} (n={len(cx)})')
 
     # ── C. shuffle control ───────────────────────────────────────────────────
     print('\n=== C. shuffle control: gain recovered by a random vector ===')

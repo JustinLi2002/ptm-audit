@@ -111,12 +111,23 @@ def main():
             for k, i in enumerate(s_):
                 r[i] = k + 1
             return r
-        rx, ry = rank(xs), rank(ys)
-        mx, my = np.mean(rx), np.mean(ry)
-        rho = (sum((i - mx) * (j - my) for i, j in zip(rx, ry)) /
-               np.sqrt(sum((i - mx) ** 2 for i in rx) *
-                       sum((j - my) ** 2 for j in ry)))
+
+        def spearman(xs, ys):
+            rx, ry = rank(xs), rank(ys)
+            mx, my = np.mean(rx), np.mean(ry)
+            return (sum((i - mx) * (j - my) for i, j in zip(rx, ry)) /
+                    np.sqrt(sum((i - mx) ** 2 for i in rx) *
+                            sum((j - my) ** 2 for j in ry)))
+        rho = spearman(xs, ys)
         print(f"\n  homogeneity vs Δ(+PPI): Spearman ρ = {rho:.3f} (n={len(xs)})")
+        # the value quoted in the main text sets N-glycosylation aside: its
+        # sequence-only baseline on this release (0.985) leaves little room
+        # for a protein-level channel to affect
+        ps = [p for p in ORDER if p in R and HOMO.get(p) is not None]
+        k = [i for i, p in enumerate(ps) if p != "glycosylation_n"]
+        if len(k) < len(ps):
+            rho7 = spearman([xs[i] for i in k], [ys[i] for i in k])
+            print(f"  excluding N-glycosylation: Spearman ρ = {rho7:.3f} (n={len(k)})")
 
 
 if __name__ == "__main__":

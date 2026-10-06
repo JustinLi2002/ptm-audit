@@ -25,6 +25,8 @@ Phospho Y        0.8710    0.8662   +0.0048 |   0.8020   0.7527  +0.0493 |    10
   is not intrinsically harder; the identity baseline's drop is the artefact.
 
   pure-positive share vs identity drop: r = 0.906 (n=8)
+  pure-positive share vs identity drop: Spearman rho = 0.952 (n=8)
+  same, the two methylation tasks averaged into one: Spearman rho = 0.964 (n=7)
 
 === C. shuffle control: gain recovered by a random vector ===
 PTM            baseline  real kin  shuffled  recovered
