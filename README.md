@@ -42,26 +42,31 @@ judged.
 ## Figure and table map
 
 Output filenames carry the numbering the figures had while the manuscript was
-being drafted, which runs one ahead of the final numbering from Figure 2 onward.
+being drafted, which runs one ahead of the final numbering for Figures 3 to 5.
 Renaming them would break the `savefig` paths in three scripts, so the mapping is
 recorded here instead.
 
 | Manuscript | File | Produced by |
 |---|---|---|
 | Figure 1 | `figures/figure1.png` | hand-drawn |
-| Figure 2, annotation-depth mechanism | `figures/figure3.png` | `analysis/make_figures_v2.py`, `mechanism_chain_figure` |
+| Figure 2, annotation depth | `results/section3_20260920/figure2_corrected.png` | `analysis/plot_corrected.py`, from tables written by `analysis/section3_corrected.py` |
 | Figure 3, cross-evaluation | `figures/figure4.png` | `analysis/make_figure_merged.py` |
 | Figure 4, variance structure | `figures/figure5.png` | `analysis/make_figures_v2.py`, `variance_figure` |
 | Figure 5, synthetic sweep | `figures/figure6.png` | `analysis/synthetic_reversal.py --mode sweep` |
 | Supplementary Figure S1, permutation control | `figures/figureS1.png` | `make_figures.py` |
-| Supplementary Figure S2, false-negative sensitivity | `figures/figure_s2_fn_sensitivity.png` | `analysis/make_figure_s2.py` |
+| Supplementary Figure S2, false-negative sensitivity | `results/section3_20260920/figure_s2_fn_sensitivity.png` | `analysis/make_figure_s2.py --results results/section3_20260920` |
 | Supplementary Figure S3, identity baseline | `figures/figure2.png` | `make_figures.py` |
-| Supplementary Figure S4, depth by protein size | `figures/figure_S4.png` | `analysis/plot_depth_strata.py` |
+| Supplementary Figure S4, depth by candidate count | `results/section3_20260920/figureS4_corrected.png` | `analysis/plot_corrected.py` |
 | Supplementary Figure S5, permutation margin | `figures/figure_S5.png` | `analysis/plot_perm_margin.py` |
 
 Supplementary Figure S3 was Figure 2 of an earlier draft and moved to the
 supplement when the Results were reordered; its file name did not follow.
 Figures 1, S1, S2 and S3 also have `.pdf` companions in the same directory.
+
+The Section 3 revision (2026-09-20) replaced Figure 2 and Supplementary Figures
+S2 and S4. The files they replaced, `figures/figure3.png`,
+`figures/figure_s2_fn_sensitivity.png` and `figures/figure_S4.png`, are kept so
+that earlier versions stay reproducible.
 
 ## Four checks
 
@@ -189,10 +194,10 @@ SLURM submission scripts are in `slurm/`.
 | Tables 2 and 3, Supplementary Tables S3, S4, S11 | `analysis/crosseval_summary.py [--all]`, independently recomputed by `analysis/crosseval_verify.py` |
 | Bootstrap intervals in Tables 2 and 3 | `slurm/crosseval_ci.slurm` then `analysis/merge_ci_shards.py` |
 | Supplementary Tables S1, S2 | `analysis/cluster_bootstrap.py` |
-| Supplementary Table S5, annotation depth | `analysis/mechanism_chain.py` |
+| Supplementary Table S5, annotation depth | `analysis/section3_corrected.py` (`results/section3_20260920/ridge_summary.tsv`); `analysis/mechanism_chain.py` produced the version before the Section 3 revision |
 | Supplementary Tables S6, S7, S8 | `audit_ptm_benchmark.py`, `restricted_eval.py` |
 | Supplementary Table S9, current release | `train_alldata.py`, then `analysis/summarize_alldata.py` (AUROC, and the across-seed spread quoted in Note S6) and `analysis/s9_auprc_v2.py` (the AUPRC companion) |
-| Supplementary Table S10, false-negative sensitivity | `analysis/fn_sensitivity.py`, `analysis/make_table_s10.py` |
+| Supplementary Table S10, false-negative sensitivity | `analysis/fn_sensitivity.py`; the methylation cells rerun by `analysis/recompute_methyl_sensitivity.py` and merged by `analysis/assemble_section3_sensitivity.py`; then `analysis/make_table_s10.py --results results/section3_20260920` |
 | Supplementary Table S12, cross-benchmark homogeneity | `analysis/benchmark_homogeneity.py` |
 | Variance structure, all tasks | `analysis/icc_by_task.py [--feat esm]`, `analysis/icc_audit_v2.py` |
 | Supplementary Note S2, homology control | `analysis/homology_control.py` |

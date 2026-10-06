@@ -26,7 +26,7 @@ from scipy.stats import rankdata, spearmanr
 MARGIN = {"Phospho S/T": +0.0026, "Phospho Y": +0.0208, "Acetyl K": -0.1285,
           "Meth K/R": -0.0613, "Meth R": -0.0706, "Sumo K": -0.0558,
           "Ubiq K": -0.0033, "N-Glyc N": +0.0074}
-# pure-positive share of the rebuilt-evaluated test partition, per cent
+# pure-positive share of the threshold-sampled (replica) test partition, per cent
 PUREPOS = {"Phospho Y": 3.5, "Phospho S/T": 3.8, "Ubiq K": 12.6, "Sumo K": 16.5,
            "Acetyl K": 20.3, "Meth K/R": 27.8, "Meth R": 31.6, "N-Glyc N": 35.9}
 # sequence-only AUROC on the protein-disjoint reconstruction, natural negatives

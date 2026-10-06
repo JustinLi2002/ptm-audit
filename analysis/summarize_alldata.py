@@ -17,6 +17,7 @@ import glob
 import json
 import os
 from collections import defaultdict
+from itertools import permutations
 
 import numpy as np
 
@@ -118,16 +119,29 @@ def main():
             return (sum((i - mx) * (j - my) for i, j in zip(rx, ry)) /
                     np.sqrt(sum((i - mx) ** 2 for i in rx) *
                             sum((j - my) ** 2 for j in ry)))
+
+        def exact_p(xs, ys):
+            # two-sided exact permutation p: the share of all n! pairings of
+            # xs with ys whose |rho| is at least the observed one
+            obs = abs(spearman(xs, ys))
+            rx = np.array(rank(xs), float)
+            rx -= rx.mean()
+            ry = np.array(list(permutations(rank(ys))), float)
+            ry -= ry.mean(axis=1, keepdims=True)
+            r = ry @ rx / np.sqrt((ry ** 2).sum(axis=1) * (rx ** 2).sum())
+            return float(np.mean(np.abs(r) >= obs - 1e-9))
         rho = spearman(xs, ys)
-        print(f"\n  homogeneity vs Δ(+PPI): Spearman ρ = {rho:.3f} (n={len(xs)})")
+        print(f"\n  homogeneity vs Δ(+PPI): Spearman ρ = {rho:.3f} "
+              f"(n={len(xs)}, exact p={exact_p(xs, ys):.4f})")
         # the value quoted in the main text sets N-glycosylation aside: its
         # sequence-only baseline on this release (0.985) leaves little room
         # for a protein-level channel to affect
         ps = [p for p in ORDER if p in R and HOMO.get(p) is not None]
         k = [i for i, p in enumerate(ps) if p != "glycosylation_n"]
         if len(k) < len(ps):
-            rho7 = spearman([xs[i] for i in k], [ys[i] for i in k])
-            print(f"  excluding N-glycosylation: Spearman ρ = {rho7:.3f} (n={len(k)})")
+            x7, y7 = [xs[i] for i in k], [ys[i] for i in k]
+            print(f"  excluding N-glycosylation: Spearman ρ = {spearman(x7, y7):.3f} "
+                  f"(n={len(k)}, exact p={exact_p(x7, y7):.4f})")
 
 
 if __name__ == "__main__":
