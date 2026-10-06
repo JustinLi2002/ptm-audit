@@ -466,3 +466,42 @@ the manuscript can be checked without rerunning anything:
 
 `table1.txt`, `summary.json`, `unseen_eval.txt` and the two checksum files are
 from the earlier round.
+
+## Section 3 revision (2026-09-20)
+
+The revised Section 3 and the revised false-negative sensitivity analysis
+were computed with three scripts that read the existing reconstructions and
+prediction files only; no networks are retrained.
+
+    analysis/section3_corrected.py             annotation-depth probe with size
+                                               and length controls and residual R2,
+                                               label-rate and score-depth
+                                               correlations, fixed-neighbour
+                                               analysis, depth by candidate-count
+                                               strata; writes Figure 2 and
+                                               Supplementary Figure S4
+    analysis/recompute_methyl_sensitivity.py   reruns the false-negative
+                                               sensitivity cells affected by
+                                               de-duplicating methylation positions,
+                                               one shard per run
+    analysis/assemble_section3_sensitivity.py  merges those cells with the
+                                               unchanged tasks into
+                                               fn_sensitivity_{ppi,esm}.tsv
+
+Outputs are in `results/section3_20260920/`. `manifest.json` records the
+SHA-256 of the `section3_corrected.py` that produced them and the definitions
+used (depth: unique protein-position annotations per merged type; size: full
+target-residue count from the reference FASTA).
+
+Paths. The scripts are committed as they were run on the UConn HPC, where the
+working root is `/home/FCAM/juli/HRP` (it holds this repository, the
+reconstructions and the prediction files; `manifest.json` records it as
+`input_root`). `section3_corrected.py` and `recompute_methyl_sensitivity.py`
+take that root as `--root` and an output directory as `--out`;
+`recompute_methyl_sensitivity.py` also takes `--shard`, and shards 0 to 11 were
+run, writing to `section3_revision_20260920/fn_shards/shard00` to `shard11`.
+`assemble_section3_sensitivity.py` has the root written into it: it reads
+`/home/FCAM/juli/HRP/ptm-audit/results/fn_sensitivity_{ppi,esm}.tsv` and the
+shard outputs under `/home/FCAM/juli/HRP/section3_revision_20260920/`, and
+writes to `/home/FCAM/juli/HRP/section3_revision_20260920/results/`. Change
+`root` at the top of that script to run it elsewhere.

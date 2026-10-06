@@ -1,0 +1,11 @@
+{
+  "script_sha256": "2e954895334c1c22e7688b1aae881ea59a548f6409336304f45629978bb239e6",
+  "input_root": "/home/FCAM/juli/HRP",
+  "status": "complete",
+  "depth": "union of unique protein-position annotations in each merged type",
+  "size": "full target-residue count from reference FASTA",
+  "ridge_sample": "intersection of feature coverage; same proteins and folds",
+  "ridge_control": "size fit within each outer training fold only",
+  "neighbours": "shared training-protein pool and fixed neighbour IDs for both label sources",
+  "percentiles": "within each partition separately; then equal mean across three partitions"
+}
