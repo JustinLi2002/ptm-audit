@@ -505,3 +505,22 @@ run, writing to `section3_revision_20260920/fn_shards/shard00` to `shard11`.
 shard outputs under `/home/FCAM/juli/HRP/section3_revision_20260920/`, and
 writes to `/home/FCAM/juli/HRP/section3_revision_20260920/results/`. Change
 `root` at the top of that script to run it elsewhere.
+
+Figure 2 and Supplementary Figure S4 as they appear in the manuscript were
+redrawn by `analysis/plot_corrected.py` from six of the tables that
+`section3_corrected.py` writes (`ridge_acetylation_oof.tsv`,
+`ridge_summary.tsv`, `score_depth_summary.tsv`, `knn_summary.tsv`,
+`depth_plot_splits.tsv`, `depth_by_size_splits.tsv`). The two PNGs in
+`results/section3_20260920/` are those redrawn figures; the earlier renderings
+written by `section3_corrected.py` itself are in commit `13b1817`, and rerunning
+that script writes the earlier layout again.
+
+`plot_corrected.py` is committed as it was run, from a separate working folder
+on a laptop. It reads its tables from, and writes the two PNGs to, the folder
+`results/` one level above the script (`P` near the top of the script); inside
+this repository that would be the top-level `results/`, so set `P` to
+`results/section3_20260920` to run it here. It also puts a folder `render_deps`,
+one level above the script, at the front of `sys.path`; that folder held a local
+copy of matplotlib and is not needed where matplotlib is installed. With the
+committed tables and matplotlib 3.11, the script reproduces both PNGs pixel for
+pixel.
