@@ -1,0 +1,51 @@
+T/U dAUROC vs crosseval_verify.tsv: max |diff| = 0.0000 over 12 task-partitions
+
+== acetylation_k
+  T        pos_train 0.399  n_train 64,945
+           dauroc_unrestricted        mean -0.1776  per partition -0.1542, -0.1593, -0.2194
+           dauprc_unrestricted        mean -0.1959  per partition -0.2058, -0.1456, -0.2362
+           dauroc_perm_unrestricted   mean -0.0544  per partition -0.0803, -0.0246, -0.0584
+           dauroc_threshold           mean +0.0247  per partition +0.0359, +0.0176, +0.0206
+           dauprc_threshold           mean +0.0619  per partition +0.0758, +0.0538, +0.0562
+           real > permuted (unrestricted test): 0/3; baseline AUROC 0.7995
+  matched  pos_train 0.399  n_train 64,945
+           dauroc_unrestricted        mean +0.0646  per partition +0.0607, +0.0663, +0.0667
+           dauprc_unrestricted        mean +0.1518  per partition +0.1454, +0.1568, +0.1532
+           dauroc_perm_unrestricted   mean -0.0226  per partition -0.0300, -0.0155, -0.0224
+           dauroc_threshold           mean +0.0149  per partition +0.0107, +0.0162, +0.0176
+           dauprc_threshold           mean +0.0239  per partition +0.0191, +0.0225, +0.0302
+           real > permuted (unrestricted test): 3/3; baseline AUROC 0.8101
+  U        pos_train 0.165  n_train 156,815
+           dauroc_unrestricted        mean +0.0628  per partition +0.0629, +0.0641, +0.0614
+           dauprc_unrestricted        mean +0.1591  per partition +0.1643, +0.1593, +0.1538
+           dauroc_perm_unrestricted   mean -0.0194  per partition -0.0241, -0.0223, -0.0119
+           dauroc_threshold           mean +0.0119  per partition +0.0125, +0.0169, +0.0063
+           dauprc_threshold           mean +0.0203  per partition +0.0223, +0.0253, +0.0133
+           real > permuted (unrestricted test): 3/3; baseline AUROC 0.8174
+  paired, per partition: matched - T +0.2149, +0.2256, +0.2861 | U - matched +0.0022, -0.0022, -0.0054
+  decision rule: 2: class ratio and training-set size alone do not explain the contrast
+
+== phosphorylation_st
+  T        pos_train 0.250  n_train 581,607
+           dauroc_unrestricted        mean -0.0266  per partition -0.0244, -0.0394, -0.0158
+           dauprc_unrestricted        mean -0.1395  per partition -0.1314, -0.1820, -0.1052
+           dauroc_perm_unrestricted   mean -0.0147  per partition -0.0149, -0.0170, -0.0122
+           dauroc_threshold           mean +0.0311  per partition +0.0312, +0.0316, +0.0304
+           dauprc_threshold           mean +0.0594  per partition +0.0594, +0.0620, +0.0567
+           real > permuted (unrestricted test): 0/3; baseline AUROC 0.8712
+  matched  pos_train 0.250  n_train 581,607
+           dauroc_unrestricted        mean +0.0291  per partition +0.0297, +0.0308, +0.0268
+           dauprc_unrestricted        mean +0.0690  per partition +0.0674, +0.0769, +0.0628
+           dauroc_perm_unrestricted   mean -0.0104  per partition -0.0120, -0.0113, -0.0078
+           dauroc_threshold           mean +0.0205  per partition +0.0239, +0.0213, +0.0161
+           dauprc_threshold           mean +0.0324  per partition +0.0422, +0.0370, +0.0181
+           real > permuted (unrestricted test): 3/3; baseline AUROC 0.8749
+  U        pos_train 0.167  n_train 868,933
+           dauroc_unrestricted        mean +0.0308  per partition +0.0315, +0.0342, +0.0267
+           dauprc_unrestricted        mean +0.0765  per partition +0.0740, +0.0867, +0.0687
+           dauroc_perm_unrestricted   mean -0.0103  per partition -0.0121, -0.0109, -0.0080
+           dauroc_threshold           mean +0.0236  per partition +0.0271, +0.0261, +0.0174
+           dauprc_threshold           mean +0.0412  per partition +0.0484, +0.0506, +0.0246
+           real > permuted (unrestricted test): 3/3; baseline AUROC 0.8745
+  paired, per partition: matched - T +0.0541, +0.0702, +0.0427 | U - matched +0.0018, +0.0034, -0.0001
+  decision rule: 2: class ratio and training-set size alone do not explain the contrast

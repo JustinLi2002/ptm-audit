@@ -1,0 +1,4 @@
+3372d6a7fbf4f8912fed564e8c944763  rebuilt_datasets.tar.gz
+56be76e25dd3fb8e2ab3560500a363f3  replica_reconstruction.tar.gz
+4ea81c01d12d7331c548f20150cb5c3c  protein_disjoint_splits.tar.gz
+1a44793c368c71f01f751e466124893e  crosseval_predictions_v2.tar.gz

@@ -1,0 +1,36 @@
+reproduction of figure6_sweep.tsv (seeds 0-2, T and U, natural test; T also threshold test): max |diff| = 1.11e-16
+
+per population, unrestricted test (natural):
+  seed 0 T         dauroc_real=-0.1561 dauprc_real=-0.1721 dauroc_perm=-0.0765 real_beats_perm=+0.0000 dauroc_real_threshold=-0.0634 rho_delta=-0.4049 | pos_rate=0.579 n_neg=22657 homog=26.51%
+  seed 0 U_matched dauroc_real=+0.0725 dauprc_real=+0.1004 dauroc_perm=-0.0207 real_beats_perm=+1.0000 dauroc_real_threshold=-0.0734 rho_delta=+0.4584 | pos_rate=0.579 n_neg=22657 homog=2.55%
+  seed 0 U         dauroc_real=+0.0716 dauprc_real=+0.0998 dauroc_perm=-0.0024 real_beats_perm=+1.0000 dauroc_real_threshold=-0.0719 rho_delta=+0.4434 | pos_rate=0.242 n_neg=97785 homog=0.02%
+  seed 1 T         dauroc_real=-0.1583 dauprc_real=-0.2202 dauroc_perm=-0.0219 real_beats_perm=+0.0000 dauroc_real_threshold=-0.0624 rho_delta=-0.4086 | pos_rate=0.566 n_neg=25223 homog=25.46%
+  seed 1 U_matched dauroc_real=+0.0589 dauprc_real=+0.0955 dauroc_perm=-0.0122 real_beats_perm=+1.0000 dauroc_real_threshold=-0.0414 rho_delta=+0.4085 | pos_rate=0.566 n_neg=25223 homog=1.77%
+  seed 1 U         dauroc_real=+0.0601 dauprc_real=+0.1014 dauroc_perm=-0.0283 real_beats_perm=+1.0000 dauroc_real_threshold=-0.0401 rho_delta=+0.4027 | pos_rate=0.253 n_neg=96993 homog=0.01%
+  seed 2 T         dauroc_real=-0.0027 dauprc_real=-0.0144 dauroc_perm=-0.0366 real_beats_perm=+1.0000 dauroc_real_threshold=-0.0029 rho_delta=-0.0040 | pos_rate=0.551 n_neg=27806 homog=23.91%
+  seed 2 U_matched dauroc_real=+0.0424 dauprc_real=+0.0717 dauroc_perm=-0.0050 real_beats_perm=+1.0000 dauroc_real_threshold=-0.0343 rho_delta=+0.3640 | pos_rate=0.551 n_neg=27806 homog=0.94%
+  seed 2 U         dauroc_real=+0.0454 dauprc_real=+0.0772 dauroc_perm=-0.0119 real_beats_perm=+1.0000 dauroc_real_threshold=-0.0334 rho_delta=+0.3664 | pos_rate=0.262 n_neg=95970 homog=0.00%
+  seed 3 T         dauroc_real=-0.1210 dauprc_real=-0.1794 dauroc_perm=-0.0651 real_beats_perm=+0.0000 dauroc_real_threshold=-0.0760 rho_delta=-0.3403 | pos_rate=0.551 n_neg=26782 homog=23.92%
+  seed 3 U_matched dauroc_real=+0.0556 dauprc_real=+0.0890 dauroc_perm=-0.0072 real_beats_perm=+1.0000 dauroc_real_threshold=-0.0383 rho_delta=+0.3923 | pos_rate=0.551 n_neg=26782 homog=1.35%
+  seed 3 U         dauroc_real=+0.0563 dauprc_real=+0.0917 dauroc_perm=-0.0196 real_beats_perm=+1.0000 dauroc_real_threshold=-0.0402 rho_delta=+0.3880 | pos_rate=0.254 n_neg=96398 homog=0.00%
+  seed 4 T         dauroc_real=-0.0717 dauprc_real=-0.1445 dauroc_perm=-0.0395 real_beats_perm=+0.0000 dauroc_real_threshold=-0.0413 rho_delta=-0.2722 | pos_rate=0.558 n_neg=26586 homog=24.76%
+  seed 4 U_matched dauroc_real=+0.0491 dauprc_real=+0.0781 dauroc_perm=-0.0018 real_beats_perm=+1.0000 dauroc_real_threshold=-0.0329 rho_delta=+0.4153 | pos_rate=0.558 n_neg=26586 homog=1.69%
+  seed 4 U         dauroc_real=+0.0492 dauprc_real=+0.0807 dauroc_perm=-0.0294 real_beats_perm=+1.0000 dauroc_real_threshold=-0.0380 rho_delta=+0.3991 | pos_rate=0.257 n_neg=97076 homog=0.01%
+
+means over five populations (min, max):
+  T         dauroc_real_natural=-0.1020 [-0.1583, -0.0027]  dauprc_real_natural=-0.1461 [-0.2202, -0.0144]  dauroc_perm_natural=-0.0479 [-0.0765, -0.0219]  real>perm 1/5
+            n_pos=32901.000  n_neg=25810.800  pos_rate=0.561  n_train_entities=4499.200  pure_pos_entity_share=0.740  homog_train=24.913  r2_measured=0.307
+            absolute AUROC natural: base 0.7427, real 0.6408, perm 0.6948
+  U_matched dauroc_real_natural=+0.0557 [+0.0424, +0.0725]  dauprc_real_natural=+0.0869 [+0.0717, +0.1004]  dauroc_perm_natural=-0.0094 [-0.0207, -0.0018]  real>perm 5/5
+            n_pos=32901.000  n_neg=25810.800  pos_rate=0.561  n_train_entities=4790.600  pure_pos_entity_share=0.028  homog_train=1.659  r2_measured=0.307
+            absolute AUROC natural: base 0.7414, real 0.7971, perm 0.7321
+  U         dauroc_real_natural=+0.0566 [+0.0454, +0.0716]  dauprc_real_natural=+0.0902 [+0.0772, +0.1014]  dauroc_perm_natural=-0.0183 [-0.0294, -0.0024]  real>perm 5/5
+            n_pos=32901.000  n_neg=96844.400  pos_rate=0.254  n_train_entities=4800.000  pure_pos_entity_share=0.000  homog_train=0.007  r2_measured=0.307
+            absolute AUROC natural: base 0.7423, real 0.7988, perm 0.7239
+
+paired differences in dAUROC (unrestricted test), per population:
+  U_matched - T: +0.2285, +0.2173, +0.0451, +0.1767, +0.1208   mean +0.1577, 5/5 positive
+  U - U_matched: -0.0008, +0.0012, +0.0030, +0.0007, +0.0001   mean +0.0008, 4/5 positive
+  U - T: +0.2277, +0.2185, +0.0481, +0.1774, +0.1209   mean +0.1585, 5/5 positive
+
+decision rule: 2: class ratio and sample size alone do not explain the contrast

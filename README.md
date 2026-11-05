@@ -1,7 +1,85 @@
 # ptm-audit
 
 Diagnostics for label leakage through protein-level feature channels in PTM site
-prediction. Companion code for [manuscript in preparation].
+prediction. Companion code for "Negative sampling determines the sign of protein-level feature contributions in
+modification site prediction" (Li & Yu, manuscript in preparation).
+
+## Current manuscript and what v1.6 adds
+
+The manuscript was restructured after v1.5. The sections below this one were written for v1.5: they use that draft's
+numbering and, in places, stronger wording than the manuscript now uses ("channel", "key into a lookup table", "natural
+negatives"). Where they differ, the manuscript and this section take precedence.
+
+Names used in files: T, threshold-sampled (`replica`); U, unrestricted (`rebuilt`); M, ratio-matched (`matched`). A cell
+is the training construction followed by the test construction, so TU is trained on T and tested on U. A split is one of
+the three protein-disjoint replicates; a partition is its training, validation or test part.
+
+### Display items
+
+| Item | Script | Reads or writes |
+|---|---|---|
+| Fig. 1 | `figures/v2026_11/fig1_construction_v7.py` | `results/unobserved_weight.txt` |
+| Fig. 2 | `figures/v2026_11/fig2_reversal_v7.py` | `results/crosseval_verify.tsv`; panels g,h `ratio_matched/real/runs_real.tsv` |
+| Fig. 3 | `figures/v2026_11/fig3_explanation_v4.py` | `results/section3_20260920/`, `results/crosseval_verify.tsv` |
+| Fig. 4 | `figures/v2026_11/fig4_synthetic_v4.py` | `figures/figure6_sweep.tsv`; panel c `ratio_matched/synthetic/runs.tsv` |
+| Table 1 | `analysis/table1_cells.py` | a: `results/crosseval_verify.tsv`, `results/crosseval_ci_v2.tsv`; b: `mouse/results/mouse_results.tsv` |
+| Supp. Fig. 1 | `analysis/plot_corrected.py` | `results/section3_20260920/figureS4_corrected.png` |
+| Supp. Fig. 2 | `analysis/plot_perm_margin.py` | `figures/figure_S5.png` |
+| Supp. Fig. 3 | `figures/v2026_11/suppfig3_dose_response.py` | `results/crosseval_verify.tsv` |
+| Supp. Fig. 4 | `figures/v2026_11/suppfig4_variance.py` | `results/icc_audit.tsv`, `figures/v2026_11/data_hpc_20261101/` |
+| Supp. Fig. 5 | `analysis/make_figure_s2.py --results results/section3_20260920` | `results/section3_20260920/figure_s2_fn_sensitivity.png` |
+| Supp. Fig. 6 | `make_figures.py` | `figures/figure2.png` |
+| Supp. Fig. 7 | `make_figures.py` | `figures/figureS1.png` |
+| Supp. Table 1 | `audit_ptm_benchmark.py` section T3, `analysis/benchmark_homogeneity.py` | |
+| Supp. Tables 2-4 | `analysis/crosseval_summary.py [--all]`, `analysis/crosseval_verify.py` | `results/crosseval_verify.tsv` |
+| Supp. Table 5 | `analysis/section3_corrected.py` | `results/section3_20260920/ridge_summary.tsv` |
+| Supp. Table 6 | `train_alldata.py`, `analysis/summarize_alldata.py`, `analysis/s9_auprc_v2.py` | |
+| Supp. Table 7 | `analysis/fn_sensitivity.py`, `analysis/recompute_methyl_sensitivity.py`, `analysis/assemble_section3_sensitivity.py`, `analysis/make_table_s10.py` | `results/section3_20260920/` |
+| Supp. Table 8 | `analysis/benchmark_homogeneity.py` | `results/cross_benchmark.tsv` |
+| Supp. Tables 9, 12, 13 | `audit_ptm_benchmark.py`, `restricted_eval.py` | |
+| Supp. Tables 10, 11 | `analysis/cluster_bootstrap.py` | `results/cluster_bootstrap_out.txt` |
+| Supp. Table 14 | `ratio_matched/real/analyse_real.py` | `ratio_matched/real/runs_real.tsv`, `ratio_matched/real/matched_v4/matched_summary.tsv` |
+| Supp. Table 15 | `extannot/scripts/extannot_check.py` | `extannot/results/` |
+| Supp. Table 16 | `analysis/crosseval_bootstrap_v2.py` | `results/crosseval_ci_v2.tsv` |
+| Supp. Table 17 | `mouse/scripts/analyse_mouse.py` | `mouse/results/` |
+
+Supplementary Note 4 (ratio-matched simulation) uses `ratio_matched/synthetic/`, Note 6 (external annotation) `extannot/`,
+and Note 9 (mouse) `mouse/`.
+
+### Added in v1.6
+
+| Path | What it is |
+|---|---|
+| `analysis/crosseval_bootstrap_v2.py`, `results/crosseval_ci_v2.*`, `docs/crosseval_bootstrap_v2.txt` | The interval for the reported statistic, the mean over splits of the per-split difference. It supersedes `analysis/crosseval_bootstrap.py` and `results/crosseval_ci.tsv`, which pool the splits and are kept for provenance |
+| `analysis/table1_cells.py`, `results/table1_cells.tsv` | Table 1 from the deposited tables |
+| `ratio_matched/synthetic/` | Ratio-matched control in the simulation, with its PREREG |
+| `ratio_matched/real/` | Ratio-matched control on acetylation K and phosphorylation S/T, with its PREREG |
+| `extannot/` | External-annotation check, aggregate tables only; see `extannot/README.txt` for access to the databases |
+| `mouse/` | Independent mouse dataset; see `mouse/README.md` |
+| `figures/v2026_11/` | Scripts and outputs of Figs 1-4 and Supplementary Figs 3-4 |
+
+The human ratio-matched training sets are not archived as files because they are reproducible: with the three folders
+`replica/`, `rebuilt/` and `pdisjoint/` from the data record under `PTM_AUDIT_BASE`, `ratio_matched/real/build_matched.py`
+gives the six files in `ratio_matched/real/matched_v4/manifest.sha256`, byte for byte.
+
+### Changes made when copying into this repository
+
+The scripts ran from other folders. Compared with the versions that ran, only the following differ:
+- `.py`, `.sh` and `.slurm` files have LF line endings;
+- hard-coded local paths became paths relative to the repository root, in `ratio_matched/synthetic/{ratio_matched,summarise}.py`, `ratio_matched/real/{analyse_real,train_matched}.py`, `mouse/scripts/analyse_mouse.py`, `mouse/scripts/hrp/train_mouse.py` and `figures/v2026_11/{figstyle,fig2_reversal_v7,fig4_synthetic_v4}.py`;
+- `ratio_matched/real/analyse_real.py` takes its input folder as an optional argument;
+- `ratio_matched/real/build_matched.py` reads `PTM_AUDIT_BASE` and always writes LF line endings;
+- the login host in the fetch scripts is a placeholder, `USER@HPC_LOGIN_HOST`.
+
+The SHA-256 of `ratio_matched.py` recorded in `ratio_matched/synthetic/runs.tsv` is that of the version that ran. The
+slurm files keep the cluster paths they ran with, as in `slurm/`. `PREREG_mouse.md` and all tables are byte-identical to
+the originals.
+
+Checked with Python 3.14.3, numpy 2.5.1, pandas 3.0.3, scipy 1.18.0, scikit-learn 1.9.0 and matplotlib 3.11.0: from these
+paths, the six figures above are pixel-identical to the manuscript's, `analyse_real.py` and `summarise.py` reproduce
+their recorded outputs byte for byte, and `analyse_mouse.py`, run on the bundles in the data record, reproduces
+`mouse/results/mouse_results.tsv` and `summary.txt` byte for byte. The figure scripts import from their own folder, so run
+them as `python figures/v2026_11/<script>.py`.
 
 ## What the leakage is
 
@@ -39,7 +117,7 @@ protein that was never assayed is not evidence of absence. What does not follow
 is that the same rule should assemble the partition on which the model is
 judged.
 
-## Figure and table map
+## Figure and table map (draft numbering, up to v1.5)
 
 Output filenames carry the numbering the figures had while the manuscript was
 being drafted, which runs one ahead of the final numbering for Figures 3 to 5.
@@ -84,9 +162,10 @@ behaves the same way.
 
 The evidence for transferable content is the paired comparison `real >
 permuted`, and even that is conditional on how the test partition was built.
-Under threshold-sampled negatives the real embedding beats the permutation in
-24 of 24 partitions; under natural negatives it *loses* in five of eight tasks
-and 15 of 24 partitions. Report both test constructions.
+Under threshold-sampled negatives the real ESM-2 embedding beats the permutation
+in 24 of 24 task-split pairs; under natural negatives it *loses* in six of eight
+tasks and 17 of 24 pairs (corrected in v1.6, from `results/crosseval_verify.tsv`).
+Report both test constructions.
 
 Three of the four checks can be computed on an existing benchmark. The fourth —
 the **natural-negative test**, evaluating the same trained model against
@@ -101,6 +180,8 @@ Confidence intervals throughout are protein-level
 (`analysis/cluster_bootstrap.py` for the identity baseline,
 `analysis/crosseval_bootstrap.py` for the cross-evaluation), not site-level; the
 ICC values reported here contradict the independence assumption the latter makes.
+For the cross-evaluation the current manuscript uses
+`analysis/crosseval_bootstrap_v2.py`, which supersedes `crosseval_bootstrap.py`.
 
 ## Quick start
 
@@ -225,6 +306,10 @@ carrying at least one site of the task, which is the population the
 reconstructions cover and a conservative floor. The manuscript quotes both.
 
 ### Confidence intervals for the cross-evaluation
+
+This describes the v1.5 procedure, which pooled the splits, so it is not the
+statistic reported in Table 1. See `analysis/crosseval_bootstrap_v2.py` and
+`docs/crosseval_bootstrap_v2.txt` for the procedure the current manuscript uses.
 
 A paired cluster bootstrap over whole test proteins, 2,000 resamples for each of
 the 192 cells. Within an iteration the baseline and the augmented model are
@@ -394,9 +479,11 @@ releases themselves are archived separately because the individually posted
 files on the source portal are expected to change.
 
 Reconstructed datasets, partition assignments, per-site predictions for every
-cell of the cross-evaluation, and both feature matrices are deposited at
-Zenodo 10.5281/zenodo.21670043. This repository is archived at
-[code DOI to be added once the release is minted].
+cell of the cross-evaluation, trained model weights and all three feature
+matrices are deposited in a Zenodo data record, concept DOI
+10.5281/zenodo.21670042, which resolves to its latest version. That version also
+holds the ratio-matched controls and the mouse dataset. This repository is
+archived under concept DOI 10.5281/zenodo.21993819.
 
 ### External benchmarks
 
@@ -457,7 +544,9 @@ the manuscript can be checked without rerunning anything:
 
     crosseval_ppi.txt / crosseval_esm.txt   the 2x2x2 cross-evaluation
     crosseval_verify.tsv                    the same, independently recomputed
-    crosseval_ci.tsv                        bootstrap intervals, 192 cells
+    crosseval_ci.tsv                        bootstrap intervals, 192 cells (pooled; superseded)
+    crosseval_ci_v2.tsv                     bootstrap intervals, the statistic in Table 1
+    table1_cells.tsv                        Table 1 of the current manuscript
     mechanism_ppi.txt / mechanism_esm.txt   the annotation-depth chain
     icc_ppi.txt / icc_esm.txt               ICC and within-protein mean squares
     icc_audit.tsv                           the same, recomputed from predictions

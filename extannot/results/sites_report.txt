@@ -1,0 +1,53 @@
+UniProt swissprot_human_ptm_2026_03.tsv: 56743 sites kept
+  unmapped note (top): MOD_RES 'N6-succinyllysine' x1265
+  unmapped note (top): CARBOHYD 'O-linked (GalNAc...) threonine' x1044
+  unmapped note (top): MOD_RES 'N-acetylalanine' x918
+  unmapped note (top): MOD_RES 'N-acetylmethionine' x787
+  unmapped note (top): MOD_RES '4-hydroxyproline' x451
+  unmapped note (top): MOD_RES 'N6-(2-hydroxyisobutyryl)lysine' x419
+  unmapped note (top): MOD_RES 'N-acetylserine' x403
+  unmapped note (top): MOD_RES 'N6-(beta-hydroxybutyryl)lysine' x278
+  unmapped note (top): MOD_RES 'N6-lactoyllysine' x272
+  unmapped note (top): MOD_RES 'N6-glutaryllysine' x264
+  unmapped note (top): MOD_RES 'N6-crotonyllysine' x224
+  unmapped note (top): MOD_RES 'N6-methacryllysine' x215
+  unmapped note (top): CARBOHYD 'O-linked (GalNAc...) serine' x196
+  unmapped note (top): MOD_RES 'N6-isonicotinyllysine' x189
+  unmapped note (top): MOD_RES 'N6-benzoyllysine' x160
+  unmapped note (top): MOD_RES 'Sulfotyrosine' x151
+  unmapped note (top): MOD_RES 'Cysteine methyl ester' x129
+  unmapped note (top): CARBOHYD 'O-linked (GlcNAc) serine' x120
+  unmapped note (top): MOD_RES 'Citrulline' x117
+  unmapped note (top): MOD_RES 'Hydroxyproline' x104
+  unmapped note (top): MOD_RES '4-carboxyglutamate' x102
+  unmapped note (top): CARBOHYD 'O-linked (Xyl...) (chondroitin sulfate) serine' x100
+  unmapped note (top): MOD_RES 'Pyrrolidone carboxylic acid' x91
+  unmapped note (top): CARBOHYD 'C-linked (Man) tryptophan' x79
+  unmapped note (top): MOD_RES 'N-acetylthreonine' x78
+CPLM Homo sapiens.txt: 256907 sites kept; not K in its own sequence: {'Acetylation': 1}
+PhosphoSitePlus Phosphorylation_site_dataset_dl20250606: 215443 rows kept (primary + low-throughput); skipped {'isoform': 6958}
+PhosphoSitePlus Acetylation_site_dataset: not present
+PhosphoSitePlus Methylation_site_dataset: not present
+PhosphoSitePlus Ubiquitination_site_dataset: not present
+PhosphoSitePlus Sumoylation_site_dataset: not present
+unique sites by source, tier, kind:
+  CPLM	primary	acetyl	58671
+  CPLM	primary	methyl_K	5915
+  CPLM	primary	sumo	53054
+  CPLM	primary	ubiquitin	139267
+  PhosphoSitePlus	low_throughput	phospho	11262
+  PhosphoSitePlus	primary	phospho	204181
+  UniProt	primary	acetyl	2467
+  UniProt	primary	methyl_K	253
+  UniProt	primary	methyl_R	769
+  UniProt	primary	nglyc	3088
+  UniProt	primary	phospho	30537
+  UniProt	primary	sumo	5316
+  UniProt	primary	ubiquitin	692
+  UniProt	similarity	acetyl	1866
+  UniProt	similarity	methyl_K	110
+  UniProt	similarity	methyl_R	742
+  UniProt	similarity	nglyc	68
+  UniProt	similarity	phospho	9939
+  UniProt	similarity	sumo	159
+  UniProt	similarity	ubiquitin	151

@@ -1,0 +1,28 @@
+{
+  "rows": 121521,
+  "localized_with_tissue_intensity": 45692,
+  "single_leading_protein": 33801,
+  "window_centre_agrees": 33779,
+  "unique_sites_before_mapping": 29437,
+  "unique_ST_before_mapping": 29054,
+  "mapping": {
+    "leading": 20262,
+    "other_entry": 5227,
+    "no_swissprot_entry": 3208,
+    "no_match": 718,
+    "ambiguous": 22
+  },
+  "mapped_unique_sites": 25475,
+  "mapped_ST_sites": 25140,
+  "mapped_ST_share_of_prefiltered_ST": 0.8652853307634061,
+  "ST_proteins": 7069,
+  "ST_proteins_merged_STY_depth_ge10": 490,
+  "ST_sites_on_depth_ge10_proteins": 8037,
+  "ST_sites_on_depth_lt10_proteins": 17103,
+  "Y_sites": 335,
+  "stop_rule_80pct_met": true,
+  "inputs": {
+    "mouse_phosphosite_tables.xlsx": "9f397a5a68310fcbcc0628729d97ac2b701d5de37e8dee7a41c33d98671e0e08",
+    "swissprot_mouse_canonical.fasta": "313a03a01c364337156b6d2eac8d59d9d9471bfe11767a1544a3acfbb5c685f0"
+  }
+}

@@ -1,0 +1,15 @@
+Construction-level prediction, recorded 2026-11-02 before any split, feature extraction or model training
+(PREREG_mouse.md, "Constructions").
+
+rebuild_datasets.py (repo v1.5, commit 8393691, unchanged), mouse Swiss-Prot 2026_03 reference, ratio 5, seed 0:
+
+  construction  positives  candidates  max ratio  negatives  pos rate  pure+ proteins  pure+ sites
+  U (rebuilt)       25140      673185       26.8     125700    0.1667            0.9%         0.1%
+  T (replica)       25140       90863        3.6      90863    0.2167           93.1%        14.7%
+
+Pure+ sites = share of all sites (before splitting) on proteins whose sites are all positive. The training-
+partition values for T, U and matched come from build_matched_mouse.py on HRP (matched_summary.tsv).
+
+Human reference (training partitions, matched_summary.tsv of the real-data control): phosphorylation S/T T 3.9%,
+acetylation K T 20.6%. The mouse T share lies between them, so the mechanism predicts a TU harm larger than in
+human phosphorylation S/T (ESM-2 TU -0.027).

@@ -31,3 +31,15 @@ Raw mean pairwise cosine similarity is 0.869, reflecting the anisotropy of
 transformer representations rather than degeneracy: after subtracting the mean
 vector it is 0.001, and the effective rank is 200.5 of 1280. The features are
 used uncentred.
+
+## Independent mouse dataset (added in v1.6)
+
+Phosphorylation S/T sites from Supplementary Table 2 of Giansanti et al., Nat Methods 2022;19:803-11,
+doi:10.1038/s41592-022-01526-y (PRIDE PXD030983), mapped by `mouse/scripts/map_sites.py` to UniProtKB/Swiss-Prot *Mus
+musculus* canonical sequences, release 2026_03. 25,140 of 29,054 prefiltered S/T sites map. The workbook's sha256 is in
+`mouse/results/mapping_report.json`; it is not redistributed. See `mouse/README.md`.
+
+## External annotation databases (added in v1.6)
+
+UniProtKB/Swiss-Prot, CPLM 4.0 and PhosphoSitePlus, used only by the external-annotation check and not redistributed.
+Versions and access are in `extannot/README.txt`.

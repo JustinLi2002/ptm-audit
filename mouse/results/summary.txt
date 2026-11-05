@@ -1,0 +1,12 @@
+Mouse phosphorylation S/T, ESM-2 (PREREG_mouse.md). ΔAUROC = real − baseline, ensemble of two initialisations, mean of three splits; 95% joint protein bootstrap, 2,000 resamples.
+
+TT: ΔAUROC +0.0096 (−0.0172, +0.0332); splits > 0: 2/3 [+0.0300, −0.0177, +0.0164]; ΔAUPRC −0.0018; permuted −0.1276; real > permuted 3/3; baseline AUROC 0.909; test positive rate 0.211
+TU: ΔAUROC −0.2117 (−0.2245, −0.1982); splits > 0: 0/3 [−0.2064, −0.2395, −0.1893]; ΔAUPRC −0.4115; permuted −0.1179; real > permuted 0/3; baseline AUROC 0.912; test positive rate 0.169
+UT: ΔAUROC +0.0278 (+0.0218, +0.0335); splits > 0: 3/3 [+0.0218, +0.0321, +0.0295]; ΔAUPRC +0.0496; permuted −0.0004; real > permuted 3/3; baseline AUROC 0.904; test positive rate 0.211
+UU: ΔAUROC +0.0206 (+0.0165, +0.0248); splits > 0: 3/3 [+0.0190, +0.0228, +0.0199]; ΔAUPRC +0.0413; permuted −0.0042; real > permuted 3/3; baseline AUROC 0.916; test positive rate 0.169
+MT: ΔAUROC +0.0249 (+0.0182, +0.0317); splits > 0: 3/3 [+0.0202, +0.0202, +0.0343]; ΔAUPRC +0.0401; permuted −0.0058; real > permuted 3/3; baseline AUROC 0.904; test positive rate 0.211
+MU: ΔAUROC +0.0204 (+0.0163, +0.0254); splits > 0: 3/3 [+0.0201, +0.0187, +0.0225]; ΔAUPRC +0.0398; permuted −0.0046; real > permuted 3/3; baseline AUROC 0.915; test positive rate 0.169
+
+Decision row: B: training-construction effect replicated; the threshold-sampled test does not hide it
+Matched (secondary): row 2: class ratio and training-set size alone do not explain the contrast
+Pure-positive share of training sites, mean over splits: T 14.7%, matched 0.3%, U 0.1%; training positive rate T 0.217, matched 0.217, U 0.167

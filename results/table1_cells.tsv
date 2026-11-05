@@ -1,0 +1,17 @@
+panel	feature	cell	d_auroc	d_auprc	tasks_with_gain_of_8	task_intervals_above	task_intervals_below	pairs_with_gain_of_24	real_gt_permuted_of_24	interval_95	splits_with_gain_of_3	real_gt_permuted_of_3
+a	Interaction	TT	−0.028	−0.036	2	1	2	10	22			
+a	Interaction	TU	−0.125	−0.145	0	0	7	2	10			
+a	Interaction	UT	−0.002	−0.002	3	2	2	10	16			
+a	Interaction	UU	+0.020	+0.047	8	8	0	24	24			
+a	ESM-2	TT	+0.044	+0.080	8	8	0	24	24			
+a	ESM-2	TU	−0.101	−0.133	1	1	7	3	7			
+a	ESM-2	UT	+0.022	+0.031	8	7	0	24	24			
+a	ESM-2	UU	+0.038	+0.085	8	8	0	24	24			
+a	ProtT5	TT	+0.039	+0.072	8	6	0	22	24			
+a	ProtT5	TU	−0.111	−0.141	1	1	7	3	6			
+a	ProtT5	UT	+0.026	+0.035	8	6	0	22	24			
+a	ProtT5	UU	+0.041	+0.090	8	8	0	24	24			
+b	ESM-2	TT	+0.010	−0.002						−0.017, +0.033	2	3
+b	ESM-2	TU	−0.212	−0.412						−0.225, −0.198	0	0
+b	ESM-2	UU	+0.021	+0.041						+0.016, +0.025	3	3
+b	ESM-2	MU	+0.020	+0.040						+0.016, +0.025	3	3

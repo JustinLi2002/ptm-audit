@@ -1,0 +1,24 @@
+reference: 16336 proteins (pdisjoint/proteins.fasta)
+external sites against the reference (residue check):
+  CPLM	primary	accession not in reference	35847
+  CPLM	primary	matched	220617
+  CPLM	primary	residue mismatch (dropped)	443
+  PhosphoSitePlus	low_throughput	accession not in reference	241
+  PhosphoSitePlus	low_throughput	matched	10926
+  PhosphoSitePlus	low_throughput	residue mismatch (dropped)	95
+  PhosphoSitePlus	primary	accession not in reference	9144
+  PhosphoSitePlus	primary	matched	192562
+  PhosphoSitePlus	primary	residue mismatch (dropped)	2475
+  UniProt	primary	accession not in reference	259
+  UniProt	primary	matched	42366
+  UniProt	primary	residue mismatch (dropped)	497
+  UniProt	similarity	accession not in reference	266
+  UniProt	similarity	matched	12587
+  UniProt	similarity	residue mismatch (dropped)	182
+  CPLM, residue-matched sites, 15-residue window vs reference (diagnostic, post hoc): {'window agrees': 215816, 'window differs': 60}
+source sets: union, CPLM:primary, PhosphoSitePlus:low_throughput, PhosphoSitePlus:primary, UniProt:primary, UniProt:primary+similarity, UniProt:similarity
+checked: every row's residue agrees with the reference; positives identical in T and U
+checked: every threshold-sampled negative lies on a donor protein (>=10 merged-type positives)
+checked: deposited ensemble AUROCs reproduced from y_pred, max |difference| = 2.22e-16
+
+PRIMARY (TU, ESM-2, union of sources, relabel): 8-task mean -0.0986, 7-unit mean -0.0791, retained 0.972, 7/8 tasks negative -> HARM SURVIVES

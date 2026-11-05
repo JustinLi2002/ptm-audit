@@ -1,0 +1,27 @@
+Corrected cross-evaluation bootstrap, 2026-11-02 (answers the review of the same day; no retraining)
+
+Problem. analysis/crosseval_bootstrap.py (repo v1.5) resampled each split separately, concatenated the three
+resampled splits and scored them once. Table 1 reports a different statistic: the mean over the three splits of
+the per-split DeltaAUROC. Example: methylation K/R, ProtT5, TT: split mean +0.0716, pooled +0.0372.
+
+Fix. crosseval_bootstrap_v2.py computes the reported statistic in every resample:
+  1. whole proteins are drawn with replacement from the union of the test proteins of the three splits; a protein
+     in the test partition of more than one split (75-323 of 808-3,593 proteins, by task and test construction)
+     carries the same multiplicity in each;
+  2. within each split, sites are weighted by their protein's multiplicity and the sequence-only and augmented
+     models are scored on the same weighted sites (weighted Mann-Whitney AUROC, checked against sklearn);
+  3. the per-split differences are averaged.
+2,000 resamples; percentile interval. One stream of draws per (task, training construction, test construction),
+seeded from the cell identity and shared by the three features.
+
+Run (about 5 min of scoring on a laptop, plus file loading; inputs are the deposited predictions, Zenodo 21670043, pdisjoint_runs_v2):
+  python -X utf8 -E -P crosseval_bootstrap_v2.py <pdisjoint_runs_v2> crosseval_ci_v2.tsv -B 2000 > crosseval_ci_v2.log
+
+Outputs. crosseval_ci_v2.tsv: 96 rows (8 tasks x 4 cells x 3 features); d_auroc is the split mean and agrees with
+results/crosseval_verify.tsv to 4e-5; auroc_lo/auroc_hi are the interval; d_split0-2 the per-split values.
+
+Effect on Table 1 (tasks whose interval lies above / below zero), old -> new:
+  Interaction  TT 1/3 -> 1/2   UT 2/3 -> 2/2   UU 7/0 -> 8/0   TU 0/7 unchanged
+  ESM-2        UT 6/0 -> 7/0   TT 8/0, TU 1/7, UU 8/0 unchanged
+  ProtT5       TT 5/0 -> 6/0   TU 1/7, UT 6/0, UU 8/0 unchanged
+No statement in the main text changes; per-task values are Supplementary Table 16 (Supplementary v11).
