@@ -18,7 +18,7 @@ the three protein-disjoint replicates; a partition is its training, validation o
 
 | Item | Script | Reads or writes |
 |---|---|---|
-| Fig. 1 | `figures/v2026_11/fig1_construction_v7.py` | `results/unobserved_weight.txt` |
+| Fig. 1 | `figures/v2026_11/fig1_construction_v8.py` | `results/unobserved_weight.txt` |
 | Fig. 2 | `figures/v2026_11/fig2_reversal_v7.py` | `results/crosseval_verify.tsv`; panels g,h `ratio_matched/real/runs_real.tsv` |
 | Fig. 3 | `figures/v2026_11/fig3_explanation_v4.py` | `results/section3_20260920/`, `results/crosseval_verify.tsv` |
 | Fig. 4 | `figures/v2026_11/fig4_synthetic_v5.py` | `figures/figure6_sweep.tsv`; panel c `ratio_matched/synthetic/runs.tsv` |
