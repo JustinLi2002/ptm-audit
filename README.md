@@ -21,7 +21,7 @@ the three protein-disjoint replicates; a partition is its training, validation o
 | Fig. 1 | `figures/v2026_11/fig1_construction_v7.py` | `results/unobserved_weight.txt` |
 | Fig. 2 | `figures/v2026_11/fig2_reversal_v7.py` | `results/crosseval_verify.tsv`; panels g,h `ratio_matched/real/runs_real.tsv` |
 | Fig. 3 | `figures/v2026_11/fig3_explanation_v4.py` | `results/section3_20260920/`, `results/crosseval_verify.tsv` |
-| Fig. 4 | `figures/v2026_11/fig4_synthetic_v4.py` | `figures/figure6_sweep.tsv`; panel c `ratio_matched/synthetic/runs.tsv` |
+| Fig. 4 | `figures/v2026_11/fig4_synthetic_v5.py` | `figures/figure6_sweep.tsv`; panel c `ratio_matched/synthetic/runs.tsv` |
 | Table 1 | `analysis/table1_cells.py` | a: `results/crosseval_verify.tsv`, `results/crosseval_ci_v2.tsv`; b: `mouse/results/mouse_results.tsv` |
 | Supp. Fig. 1 | `analysis/plot_corrected.py` | `results/section3_20260920/figureS4_corrected.png` |
 | Supp. Fig. 2 | `analysis/plot_perm_margin.py` | `figures/figure_S5.png` |
@@ -66,7 +66,7 @@ gives the six files in `ratio_matched/real/matched_v4/manifest.sha256`, byte for
 
 The scripts ran from other folders. Compared with the versions that ran, only the following differ:
 - `.py`, `.sh` and `.slurm` files have LF line endings;
-- hard-coded local paths became paths relative to the repository root, in `ratio_matched/synthetic/{ratio_matched,summarise}.py`, `ratio_matched/real/{analyse_real,train_matched}.py`, `mouse/scripts/analyse_mouse.py`, `mouse/scripts/hrp/train_mouse.py` and `figures/v2026_11/{figstyle,fig2_reversal_v7,fig4_synthetic_v4}.py`;
+- hard-coded local paths became paths relative to the repository root, in `ratio_matched/synthetic/{ratio_matched,summarise}.py`, `ratio_matched/real/{analyse_real,train_matched}.py`, `mouse/scripts/analyse_mouse.py`, `mouse/scripts/hrp/train_mouse.py` and `figures/v2026_11/{figstyle,fig2_reversal_v7,fig4_synthetic_v4,fig4_synthetic_v5}.py`;
 - `ratio_matched/real/analyse_real.py` takes its input folder as an optional argument;
 - `ratio_matched/real/build_matched.py` reads `PTM_AUDIT_BASE` and always writes LF line endings;
 - the login host in the fetch scripts is a placeholder, `USER@HPC_LOGIN_HOST`.
